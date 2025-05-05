@@ -7,6 +7,9 @@ import Donaciones from "./render/verdonaciones.jsx";
 import CrearAlcancia from "./render/crearAlcancia.jsx";
 import Register from "./render/register.jsx"; // Asegúrate de que este archivo exista
 import VentaProducto from "./render/ventaProducto.jsx";
+import DetalleProducto from "./render/detalleProducto.jsx";
+import ComprarRifa from "./render/compraRifa.jsx";
+import CrearRifa from "./render/crearRifa.jsx";
 
 function App() {
   return (
@@ -132,6 +135,9 @@ function App() {
         <Route path="/crear-alcancia" element={<CrearAlcancia />} />
         <Route path="/register" element={<Register />} />
         <Route path="/ventaproducto" element={<VentaProducto />} />
+        <Route path="/detalleproducto" element={<DetalleProducto/>} />
+        <Route path="/comprarrifa" element={<ComprarRifa/>} />
+        <Route path="/crearrifa" element={<CrearRifa/>} />
       </Routes>
     </Router>
   );
