@@ -10,6 +10,11 @@ import VentaProducto from "./render/ventaProducto.jsx";
 import DetalleProducto from "./render/detalleProducto.jsx";
 import ComprarRifa from "./render/compraRifa.jsx";
 import CrearRifa from "./render/crearRifa.jsx";
+import AgregarMascota from "./render/agregarMascosta.jsx";
+import AgregarProducto from "./render/agregarProducto.jsx";
+import ActualizarActividad from "./render/actualizarActividades.jsx";
+import DonarAlcancia from "./render/donarAlcancia.jsx";
+
 
 function App() {
   return (
@@ -138,6 +143,15 @@ function App() {
         <Route path="/detalleproducto" element={<DetalleProducto/>} />
         <Route path="/comprarrifa" element={<ComprarRifa/>} />
         <Route path="/crearrifa" element={<CrearRifa/>} />
+        <Route path="/agregarmascota" element={<AgregarMascota/>} />
+        <Route path="/agregarproducto" element={<AgregarProducto/>} />
+        <Route path="/actualizaractividad" element={<ActualizarActividad/>} />
+        <Route path="/donaralcancia" element={<DonarAlcancia/>} />
+
+
+        
+
+
       </Routes>
     </Router>
   );
