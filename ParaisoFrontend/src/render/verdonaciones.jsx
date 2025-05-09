@@ -14,7 +14,6 @@ const Donaciones = () => {
       <header className="bg-red-600 py-6 flex flex-col items-center">
         <nav className="flex justify-between items-center w-full max-w-6xl px-6">
           <div className="flex items-center gap-4">
-            <img src="/tu-icono-tambor.png" alt="icono" className="w-10 h-10" />
             <span className="text-white font-semibold">Paraiso SV</span>
           </div>
           <div className="flex gap-8 text-white font-medium">

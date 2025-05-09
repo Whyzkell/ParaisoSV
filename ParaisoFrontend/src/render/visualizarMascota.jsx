@@ -1,39 +1,60 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import elnego from "../assets/elNegro.png";
 
 function VSMascota() {
   return (
-    <div className="bg-[#F9EFE0] min-h-screen flex flex-col items-center ">
-      <header className="flex justify-between items-center w-full px-8 py-4">
-        <h1 className="text-3xl font-bold">Paraiso SV</h1>
-        <nav className="space-x-6">
-          <a href="#" className="text-lg">
-            Productos
-          </a>
-          <a href="#" className="text-lg">
-            Proyectos
-          </a>
-          <a href="#" className="text-lg">
-            Madi-Care
-          </a>
-          <a href="#" className="text-lg">
-            Blog
-          </a>
+    <div className="bg-[#F9EFE0] min-h-screen flex flex-col items-center w-full">
+      <header className="relative bg-[#f5f1e7] text-center w-full mt-8">
+        <nav className="flex justify-between items-center max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-orange-500">Paraiso SV</h1>
+          <ul className="flex gap-6 text-lg">
+            <li>
+              <a href="#proyectos" className="hover:text-orange-500">
+                Proyectos
+              </a>
+            </li>
+            <li>
+              <Link to="/crear-alcancia">
+                <a href="#m" className="hover:text-orange-500">
+                  Medi-Care
+                </a>
+              </Link>
+            </li>
+            <li>
+              <a href="#blog" className="hover:text-orange-500">
+                Blog
+              </a>
+            </li>
+          </ul>
+          <div className="flex gap-4">
+            <Link to="/login">
+              <button className="px-4 py-2 bg-orange-400 text-white rounded-full hover:bg-orange-500">
+                Iniciar Sesión
+              </button>
+            </Link>
+            <Link to="/register">
+              <button className="px-4 py-2 border border-orange-400 text-orange-400 rounded-full hover:bg-orange-400 hover:text-white">
+                Registrarse
+              </button>
+            </Link>
+          </div>
         </nav>
-        <span className="text-lg font-bold">JUANCHO</span>
       </header>
 
-      <main className="flex items-center justify-center w-full px-8 py-12">
-        <div className="flex bg-white rounded-lg shadow-lg max-w-4xl w-full p-8">
-          <div className="flex-shrink-0 w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-400 flex items-center justify-center bg-[#FFD700]">
-            <img
-              src={elnego}
-              alt="El Negro"
-              className="w-full h-full object-cover"
-            />
-          </div>
+      <main className="flex items-center justify-center  w-full px-8 py-12">
+        <div className="w-1/3 flex-shrink-0 mr-16 mt-8 rounded-full overflow-hidden border-4 border-yellow-400 flex items-center justify-center bg-[#FFD700]">
+          <img
+            src={elnego}
+            alt="El Negro"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex  rounded-lg shadow-lg max-w-4xl w-2/5 p-8">
           <div className="ml-6 flex flex-col justify-between">
-            <h2 className="text-3xl font-bold">El Negro</h2>
+            <h2 className="text-3xl font-bold mb-6">El Negro</h2>
             <p className="text-lg font-semibold">
               Edad: <span>1 año</span>
             </p>
@@ -54,7 +75,7 @@ function VSMascota() {
                 siestas en su camita.
               </li>
             </ul>
-            <p className="mt-4 text-gray-700">
+            <p className="mt-8 text-gray-700">
               Max ya está vacunado, desparacitado y esterilizado, listo para ser
               parte de tu familia. Solo necesita una familia responsable que le
               dé todo el amor y atención que merece.

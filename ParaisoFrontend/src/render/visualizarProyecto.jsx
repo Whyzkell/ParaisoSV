@@ -1,44 +1,26 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import pcancer from "../assets/perroCancer.jpg";
+import pc2 from "../assets/pCancer2.png";
+import pc3 from "../assets/pc3.png";
+import pc4 from "../assets/pc4.png";
+import Navno from "./componentes/navNocesion";
 
 export default function VisuProyecto() {
   return (
     <div className="bg-gray-100 min-h-screen">
-      <header className="flex justify-between items-center p-6">
-        <h1 className="font-bold text-lg">Paraiso sv</h1>
-        <nav className="flex space-x-6">
-          <a href="#" className="text-blue-600 font-semibold">
-            Productos
-          </a>
-          <a href="#" className="font-semibold">
-            Proyectos
-          </a>
-          <a href="#" className="font-semibold">
-            Madi-Care
-          </a>
-          <a href="#" className="font-semibold">
-            Blog
-          </a>
-          <button className="bg-white border border-blue-600 text-blue-600 rounded px-4 py-2 font-semibold">
-            Iniciar Sesión
-          </button>
-          <button className="bg-transparent border border-orange-400 text-orange-400 rounded px-4 py-2 font-semibold">
-            Registrarse
-          </button>
-        </nav>
-      </header>
+      <Navno />
 
       <section>
-        <img
-          src="/main-dog.png"
-          alt="Dog"
-          className="w-full object-cover h-96"
-        />
+        <img src={pcancer} alt="Dog" className="w-full h96 object-cover " />
       </section>
 
       <section className="text-center py-10 px-4">
-        <h2 className="text-xl font-bold">Lucha Contra El Cáncer</h2>
-        <p className="text-gray-500 text-sm mt-2">22 May, 2024</p>
-        <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold mb-8">Lucha Contra El Cáncer</h2>
+        <p className="text-gray-500 text-xl mt-2 mb-8">22 May, 2024</p>
+        <p className="text-gray-600 text-xl mt-4 max-w-2xl mx-auto">
           Los perritos de las calles también suelen y es común enfermarse de
           cáncer, como los tumores de stickers el cual es un tumor cancerígeno,
           su único tratamiento es con quimioterapias y se contrae mediante las
@@ -47,14 +29,10 @@ export default function VisuProyecto() {
         </p>
       </section>
 
-      <section className="bg-yellow-100 p-10">
+      <section className="bg-[#EBE3CC] p-10">
         <div className="max-w-6xl mx-auto space-y-10">
           <div>
-            <img
-              src="/dog-history.png"
-              alt="Dog"
-              className="w-full rounded-lg mb-6"
-            />
+            <img src={pc2} alt="Dog" className="w-full rounded-lg mb-6" />
             <h3 className="font-bold text-lg mb-2">Orígenes</h3>
             <p className="text-gray-600">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -73,16 +51,8 @@ export default function VisuProyecto() {
               nisi ut aliquip ex ea commodo consequat.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <img
-                src="/dog-progress-1.png"
-                alt="Dog"
-                className="w-full rounded-lg"
-              />
-              <img
-                src="/dog-progress-2.png"
-                alt="Dog"
-                className="w-full rounded-lg"
-              />
+              <img src={pc3} alt="Dog" className="w-full rounded-lg" />
+              <img src={pc4} alt="Dog" className="w-full rounded-lg" />
             </div>
           </div>
 
