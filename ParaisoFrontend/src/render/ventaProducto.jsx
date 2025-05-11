@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import comida from "../assets/comida.png";
 import comidaJpeg from "../assets/comida.jpeg";
+import NavnoCCli from "./componentes/navCesionCli.jsx";
 
 const productos = [
   {
@@ -45,7 +46,6 @@ const productos = [
   },
 ];
 
-
 export default function VentaProducto() {
   const [busqueda, setBusqueda] = useState("");
 
@@ -55,22 +55,7 @@ export default function VentaProducto() {
 
   return (
     <div className="bg-[#f5f0dc] min-h-screen">
-      <header className="bg-[#007C8C] py-4 px-6 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <img src="/images/logo.png" alt="Logo" className="w-10 h-10" />
-          <h1 className="text-white text-xl font-bold">Paraiso SV</h1>
-        </div>
-        <nav className="flex space-x-8 text-white font-medium">
-          <a href="#productos" className="hover:underline">Productos</a>
-          <a href="#proyectos" className="hover:underline">Proyectos</a>
-          <a href="#medicare" className="hover:underline">Madi:Care</a>
-          <a href="#blog" className="hover:underline">Blog</a>
-        </nav>
-        <div className="space-x-4">
-          <button className="px-4 py-1 bg-white text-[#007C8C] rounded-full hover:bg-slate-100">Iniciar Sesión</button>
-          <button className="px-4 py-1 border border-white text-white rounded-full hover:bg-white hover:text-[#007C8C]">Registrarse</button>
-        </div>
-      </header>
+      <NavnoCCli />
 
       <section className="p-6">
         <h2 className="text-xl font-semibold mb-4">Productos</h2>
@@ -84,17 +69,39 @@ export default function VentaProducto() {
 
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {productosFiltrados.map((producto, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center">
-              <img src={producto.imagen} alt={producto.nombre} className="w-32 h-32 object-contain mb-4" />
-              <h3 className="text-sm font-semibold text-center mb-2">{producto.nombre}</h3>
-              <p className="text-orange-600 font-bold mb-3">{producto.precio}</p>
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center"
+            >
+              <img
+                src={producto.imagen}
+                alt={producto.nombre}
+                className="w-32 h-32 object-contain mb-4"
+              />
+              <h3 className="text-sm font-semibold text-center mb-2">
+                {producto.nombre}
+              </h3>
+              <p className="text-orange-600 font-bold mb-3">
+                {producto.precio}
+              </p>
               <div className="flex w-full gap-2">
                 <button className="flex-1 bg-[#007C8C] text-white text-sm px-3 py-2 rounded-full hover:bg-[#005f6a]">
                   Buy Now
                 </button>
                 <button className="border border-gray-300 rounded-full p-2 hover:bg-gray-100">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.6 8h13.2L17 13M7 13L5.4 5M17 13l1.6 8" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.6 8h13.2L17 13M7 13L5.4 5M17 13l1.6 8"
+                    />
                   </svg>
                 </button>
               </div>

@@ -22,6 +22,8 @@ import union from "./assets/Union.png";
 import sanivet from "./assets/sanivet.png";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import Navno from "./render/componentes/navNocesion.jsx";
+import NavnoCCli from "./render/componentes/navCesionCli.jsx";
+import NavnoCAdm from "./render/componentes/navCesionAdm.jsx";
 
 const projects = [
   {
@@ -116,7 +118,7 @@ function App() {
           element={
             <div className="bg-beige text-gray-800 font-sans">
               {/* Hero Section */}
-              <Navno />
+              <NavnoCAdm />
               <section className="flex flex-col md:flex-row items-center bg-[#F5F0DC] justify-between">
                 <div className="flex-1 ml-40 w-2/5">
                   <h1 className="text-8xl font-bold leading-tight">

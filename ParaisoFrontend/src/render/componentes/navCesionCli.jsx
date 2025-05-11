@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useState } from "react";
 
-export default function Navno() {
+export default function NavnoCCli() {
   return (
     <header className="relative  text-center py-8 px-8">
       <nav className="flex justify-between items-center w-10/12 mx-auto">
@@ -46,16 +46,7 @@ export default function Navno() {
           </li>
         </ul>
         <div className="flex gap-4">
-          <Link to="/login">
-            <button className="px-4 py-2 bg-orange-400 text-white rounded-full hover:bg-orange-500">
-              Iniciar Sesión
-            </button>
-          </Link>
-          <Link to="/register">
-            <button className="px-4 py-2 border border-orange-400 text-orange-400 rounded-full hover:bg-orange-400 hover:text-white">
-              Registrarse
-            </button>
-          </Link>
+          <button className="  text-orange-400 text-2xl">Juanito</button>
         </div>
       </nav>
     </header>

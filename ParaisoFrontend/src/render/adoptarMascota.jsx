@@ -5,6 +5,7 @@ import { useState } from "react";
 import chuchitos from "../assets/chuchitos.png";
 import hosh from "../assets/hosh.png";
 import { useNavigate } from "react-router-dom";
+import NavnoCCli from "./componentes/navCesionCli.jsx";
 
 const pets = [
   {
@@ -26,40 +27,7 @@ export default function AdoptarMascota() {
 
   return (
     <div className="bg-yellow-50 min-h-screen">
-      <header className="relative bg-yellow-50 text-center py-8 px-8">
-        <nav className="flex justify-between items-center max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-orange-500">Paraiso SV</h1>
-          <ul className="flex gap-6 text-lg">
-            <li>
-              <a href="#proyectos" className="hover:text-orange-500">
-                Proyectos
-              </a>
-            </li>
-            <li>
-              <a href="#medicare" className="hover:text-orange-500">
-                Medi-Care
-              </a>
-            </li>
-            <li>
-              <a href="#blog" className="hover:text-orange-500">
-                Blog
-              </a>
-            </li>
-          </ul>
-          <div className="flex gap-4">
-            <Link to="/login">
-              <button className="px-4 py-2 bg-orange-400 text-white rounded-full hover:bg-orange-500">
-                Iniciar Sesión
-              </button>
-            </Link>
-            <Link to="/register">
-              <button className="px-4 py-2 border border-orange-400 text-orange-400 rounded-full hover:bg-orange-400 hover:text-white">
-                Registrarse
-              </button>
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <NavnoCCli />
 
       <section className="flex text-center px-6 w-full">
         <div className="flex-row justify-items-start justify-start ml-8 w-2/5 mt-8">

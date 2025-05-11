@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";
 
 const ActualizarActividad = () => {
   const [imagen, setImagen] = useState(null);
-  const [titulo, setTitulo] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+  const [titulo, setTitulo] = useState("");
+  const [descripcion, setDescripcion] = useState("");
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -14,29 +15,32 @@ const ActualizarActividad = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f5dc] font-sans">
-      {/* Encabezado */}
-      <header className="bg-white shadow p-4 flex justify-between items-center">
-        <div className="text-2xl font-bold text-orange-500">Paraíso SV</div>
-        <nav className="space-x-6 text-gray-700 font-medium">
-          <a href="#" className="text-orange-500 font-semibold">Productos</a>
-          <a href="#" className="hover:text-orange-500">Proyectos</a>
-          <a href="#" className="hover:text-orange-500">Madi-Care</a>
-          <a href="#" className="hover:text-orange-500">Blog</a>
-        </nav>
-        <div className="text-gray-600 font-semibold"></div>
-      </header>
+      <NavnoCAdm />
 
       {/* Formulario principal */}
       <main className="max-w-md mx-auto mt-10 bg-[#F5F0DC] p-6 rounded-3xl shadow-md border border-black">
         <form className="space-y-4">
           {/* Área de imagen */}
           <div className="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl h-40 bg-[#fdfdf5]">
-            <label htmlFor="imagen" className="cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400">
+            <label
+              htmlFor="imagen"
+              className="cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400"
+            >
               {imagen ? (
-                <img src={imagen} alt="Actividad" className="object-cover h-full w-full rounded-xl" />
+                <img
+                  src={imagen}
+                  alt="Actividad"
+                  className="object-cover h-full w-full rounded-xl"
+                />
               ) : (
                 <>
-                  <svg className="w-10 h-10 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <svg
+                    className="w-10 h-10 mb-1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M3 16l4-4a4 4 0 015.656 0L21 4M3 16v5h5M21 4v5h-5" />
                   </svg>
                   <p className="text-sm">Sube una imagen</p>
@@ -54,7 +58,9 @@ const ActualizarActividad = () => {
 
           {/* Campo Título */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Título</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Título
+            </label>
             <input
               type="text"
               value={titulo}
@@ -66,7 +72,9 @@ const ActualizarActividad = () => {
 
           {/* Campo Descripción */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Descripción</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Descripción
+            </label>
             <textarea
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}

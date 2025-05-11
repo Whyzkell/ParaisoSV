@@ -1,30 +1,17 @@
-import React, { useState } from 'react';
-import alcanciaImg from '../assets/alcancia.png';
+import React, { useState } from "react";
+import alcanciaImg from "../assets/alcancia.png";
+import NavnoCCli from "./componentes/navCesionCli.jsx";
 
 const DonarAlcancia = () => {
-  const [descripcion, setDescripcion] = useState('');
-  const [meta, setMeta] = useState('');
+  const [descripcion, setDescripcion] = useState("");
+  const [meta, setMeta] = useState("");
 
   return (
     <div className="min-h-screen bg-red-600 font-sans">
       {/* Encabezado dividido en dos mitades */}
-      <header className="flex w-full h-20">
-        {/* Mitad izquierda: beige */}
-        <div className="w-2/3 bg-[#F5F0DC] flex items-center justify-between px-6">
-          <div className="text-2xl font-bold text-orange-500">Paraíso SV</div>
-          <nav className="space-x-6 text-gray-700 font-medium">
-            <a href="#" className="hover:text-orange-500">Productos</a>
-            <a href="#" className="hover:text-orange-500">Proyectos</a>
-            <a href="#" className="hover:text-orange-500">Madi-Care</a>
-            <a href="#" className="hover:text-orange-500">Blog</a>
-          </nav>
-        </div>
-
-        {/* Mitad derecha: roja */}
-        <div className="w-1/3 bg-red-600 flex items-center justify-end px-6">
-          <div className="text-white font-semibold">JUANCHO</div>
-        </div>
-      </header>
+      <div className="bg-[#F5F0DC]">
+        <NavnoCCli />
+      </div>
 
       {/* Contenido dividido */}
       <main className="flex flex-col lg:flex-row w-full h-full">
@@ -35,7 +22,9 @@ const DonarAlcancia = () => {
               <h2 className="text-3xl font-bold text-center text-gray-800"></h2>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-1">Descripción</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Descripción
+                </label>
                 <input
                   type="text"
                   value={descripcion}
@@ -46,7 +35,9 @@ const DonarAlcancia = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-1">Meta monetaria</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Meta monetaria
+                </label>
                 <input
                   type="number"
                   value={meta}
