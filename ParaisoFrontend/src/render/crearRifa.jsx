@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import NavnoCAdm from "./componentes/navCesionAdm.jsx";
+import Footer from "./componentes/footer.jsx";
 
 const RifaPeluditos = () => {
   const [titulo, setTitulo] = useState("");
@@ -21,7 +22,7 @@ const RifaPeluditos = () => {
       </div>
 
       {/* CONTENIDO PRINCIPAL */}
-      <section className="bg-[#F5F0DC] min-h-screen py-16 px-4 flex flex-col lg:flex-row items-start justify-center gap-14">
+      <section className="bg-[#F5F0DC]  py-20 px-4 flex flex-col lg:flex-row items-start justify-center gap-14">
         {/* FORMULARIO IZQUIERDO - MÁS GRANDE */}
         <div className="relative transform -skew-y-3 bg-[#f5f0dc] border border-gray-300 rounded-3xl shadow-md p-6 max-w-md w-full">
           <div className="transform skew-y-3">
@@ -99,6 +100,7 @@ const RifaPeluditos = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </>
   );
 };

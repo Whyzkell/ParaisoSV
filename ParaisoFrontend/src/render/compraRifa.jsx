@@ -2,6 +2,7 @@ import React from "react";
 import rifa from "../assets/rifa.jpg";
 import { Link } from "react-router-dom";
 import NavnoCCli from "./componentes/navCesionCli.jsx";
+import Footer from "./componentes/footer.jsx";
 
 const comprarRifa = () => {
   return (
@@ -75,6 +76,7 @@ const comprarRifa = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </>
   );
 };

@@ -3,6 +3,7 @@ import chancho from "../assets/chancho.png";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import NavnoCAdm from "./componentes/navCesionAdm.jsx";
+import Footer from "./componentes/footer.jsx";
 
 const CrearAlcancia = () => {
   const [descripcion, setDescripcion] = useState("");
@@ -89,6 +90,7 @@ const CrearAlcancia = () => {
           <img src={chancho} alt="Alcancía" className="w-2/3 object-contain" />
         </div>
       </div>
+      <Footer />
     </>
   );
 };

@@ -27,8 +27,8 @@ export default function NavnoCAdm() {
             </Link>
           </li>
           <li>
-            <Link to="/comprarrifa" className="hover:text-orange-500">
-              Comprar rifa
+            <Link to="/todas-rifas" className="hover:text-orange-500">
+              Rifas
             </Link>
           </li>
           <li>
@@ -59,6 +59,9 @@ export default function NavnoCAdm() {
                 </li>
                 <li className="px-4 py-2 hover:bg-orange-100">
                   <Link to="/actualizaractividad">Actualizar actividad</Link>
+                </li>
+                <li className="px-4 py-2 hover:bg-orange-100">
+                  <Link to="/donaciones">Ver Donaciones</Link>
                 </li>
               </ul>
             )}

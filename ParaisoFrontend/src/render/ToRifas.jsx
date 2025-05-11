@@ -8,22 +8,20 @@ import { useNavigate } from "react-router-dom";
 import NavnoCCli from "./componentes/navCesionCli.jsx";
 import Footer from "./componentes/footer.jsx";
 
-const pets = [
+const rifas = [
   {
-    name: "Kaiser",
-    breed: "Pastor aleman",
-    age: "2 años",
+    name: "Rifa de Gorra",
+    descri: "Estamos rifando gorras",
+    costo: "$5",
     image: hosh,
   },
-  { name: "Firulais", breed: "Beagle", age: "1 año", image: hosh },
-  { name: "Pepe", breed: "Beagle", age: "1 año", image: hosh },
 ];
 
-export default function AdoptarMascota() {
+export default function TodasRifas() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/visualizar-mascota");
+    navigate("/comprarrifa");
   };
 
   return (
@@ -32,15 +30,13 @@ export default function AdoptarMascota() {
 
       <section className="flex text-center px-6 w-full">
         <div className="flex-row justify-items-start justify-start ml-8 w-2/5 mt-8">
-          <h2 className="text-teal-600 font-bold text-6xl ">LADOPTA A TU</h2>
-          <h3 className="text-green-400 font-bold text-6xl  mt-4">
-            NUEVO AMIGO
-          </h3>
+          <h2 className="text-teal-600 font-bold text-6xl ">Apoya a la</h2>
+          <h3 className="text-green-400 font-bold text-6xl  mt-4">causa</h3>
           <p className="text-gray-600 text-3xl mt-4  text-left w-10/12">
-            Todos merecemos una segunda oportunidad, los perritos y gatitos ya
-            sean cachorros, jóvenes, adultos o ancianos, también lo merecen. Por
-            eso creamos campañas masivas de adopción para que ellos tengan la
-            oportunidad de ir a un buen hogar.
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta
+            fuga maiores incidunt, facilis possimus dicta, doloribus cupiditate
+            eos commodi est amet, provident aut. Nihil, deserunt maiores. Ea,
+            cum expedita. Ullam!
           </p>
         </div>
         <div className="flex justify-center mt-6  w-3/5">
@@ -51,28 +47,30 @@ export default function AdoptarMascota() {
       <section className="bg-gradient-to-b from-yellow-400 via-yellow-400 to-red-500 -mt-24 flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-11/12 mt-24">
           {Array.from({ length: 7 }).map((_, index) =>
-            pets.map((pet, i) => (
+            rifas.map((rifas, i) => (
               <div
                 key={index + "-" + i}
                 className="bg-white rounded-lg shadow-md p-4 text-center mt-8 flex "
               >
                 <div className="flex-row w-3/5 justify-items-start">
-                  <h4 className="text-3xl font-bold ml-5 mt-4">{pet.name}</h4>
+                  <h4 className="text-3xl font-bold ml-5 mt-4">{rifas.name}</h4>
                   <p className="text-gray-500 ml-5 text-2xl mt-3">
-                    {pet.breed}
+                    {rifas.descri}
                   </p>
-                  <p className="text-gray-400 text-xl ml-5 mt-3">{pet.age}</p>
+                  <p className="text-gray-400 text-xl ml-5 mt-3">
+                    {rifas.costo}
+                  </p>
                   <button
                     onClick={handleClick}
                     className="mt-16 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 ml-5"
                   >
-                    Más Información
+                    Comprar Ticket
                   </button>
                 </div>
                 <div className="w-2/5">
                   <img
-                    src={pet.image}
-                    alt={pet.name}
+                    src={rifas.image}
+                    alt={rifas.name}
                     className="w-10/12 object-cover "
                   />
                 </div>

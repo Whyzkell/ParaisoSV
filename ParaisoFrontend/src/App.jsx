@@ -16,6 +16,8 @@ import AgregarMascota from "./render/agregarMascosta.jsx";
 import AgregarProducto from "./render/agregarProducto.jsx";
 import ActualizarActividad from "./render/actualizarActividades.jsx";
 import DonarAlcancia from "./render/donarAlcancia.jsx";
+import TodasRifas from "./render/ToRifas.jsx";
+
 import perro from "./assets/perroSueter.png";
 import vector from "./assets/Vector.png";
 import union from "./assets/Union.png";
@@ -24,6 +26,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 import Navno from "./render/componentes/navNocesion.jsx";
 import NavnoCCli from "./render/componentes/navCesionCli.jsx";
 import NavnoCAdm from "./render/componentes/navCesionAdm.jsx";
+import Footer from "./render/componentes/footer.jsx";
 
 const projects = [
   {
@@ -282,58 +285,8 @@ function App() {
                   </div>
                 </div>
               </section>
-              <footer className="bg-[#042B3C] text-white py-10 px-6 md:px-20 flex flex-col md:flex-row justify-between items-center md:items-start gap-10 relative">
-                {/* Logo y nombre */}
-                <div className="text-left">
-                  <h2 className="text-3xl text-[#F16717] font-semibold">
-                    Paraiso sv
-                  </h2>
-                </div>
 
-                {/* Navegación + redes */}
-                <div className="text-center md:text-right">
-                  <div className="flex flex-wrap justify-center md:justify-end gap-6 text-sm mb-4">
-                    <a href="#" className="hover:underline">
-                      Adopta
-                    </a>
-                    <a href="#" className="hover:underline">
-                      Comprar rifa
-                    </a>
-                    <a href="#" className="hover:underline">
-                      Proyectos
-                    </a>
-                    <a href="#" className="hover:underline">
-                      Alcancía
-                    </a>
-                    <a href="#" className="hover:underline">
-                      Comprar Productos
-                    </a>
-                  </div>
-
-                  <p className="mb-2">Sanivet sv</p>
-
-                  <div className="flex justify-center md:justify-end gap-4">
-                    <a
-                      href="#"
-                      className="bg-white text-[#042B3C] p-2 rounded-full"
-                    >
-                      <Facebook size={20} />
-                    </a>
-                    <a
-                      href="#"
-                      className="bg-white text-[#042B3C] p-2 rounded-full"
-                    >
-                      <Instagram size={20} />
-                    </a>
-                    <a
-                      href="#"
-                      className="bg-white text-[#042B3C] p-2 rounded-full"
-                    >
-                      <Twitter size={20} />
-                    </a>
-                  </div>
-                </div>
-              </footer>
+              <Footer />
             </div>
           }
         />
@@ -353,6 +306,7 @@ function App() {
         <Route path="/agregarproducto" element={<AgregarProducto />} />
         <Route path="/actualizaractividad" element={<ActualizarActividad />} />
         <Route path="/donaralcancia" element={<DonarAlcancia />} />
+        <Route path="/todas-rifas" element={<TodasRifas />} />
       </Routes>
     </Router>
   );

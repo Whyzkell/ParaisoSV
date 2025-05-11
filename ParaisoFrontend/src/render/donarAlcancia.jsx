@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import alcanciaImg from "../assets/alcancia.png";
 import NavnoCCli from "./componentes/navCesionCli.jsx";
+import Footer from "./componentes/footer.jsx";
 
 const DonarAlcancia = () => {
   const [descripcion, setDescripcion] = useState("");
@@ -74,6 +75,7 @@ const DonarAlcancia = () => {
           />
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import comida from "../assets/comida.png";
 import comidaJpeg from "../assets/comida.jpeg";
 import NavnoCCli from "./componentes/navCesionCli.jsx";
+import Footer from "./componentes/footer.jsx";
+import { useNavigate } from "react-router-dom";
 
 const productos = [
   {
@@ -53,6 +55,12 @@ export default function VentaProducto() {
     producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/detalleproducto");
+  };
+
   return (
     <div className="bg-[#f5f0dc] min-h-screen">
       <NavnoCCli />
@@ -85,7 +93,10 @@ export default function VentaProducto() {
                 {producto.precio}
               </p>
               <div className="flex w-full gap-2">
-                <button className="flex-1 bg-[#007C8C] text-white text-sm px-3 py-2 rounded-full hover:bg-[#005f6a]">
+                <button
+                  onClick={handleClick}
+                  className="flex-1 bg-[#007C8C] text-white text-sm px-3 py-2 rounded-full hover:bg-[#005f6a]"
+                >
                   Buy Now
                 </button>
                 <button className="border border-gray-300 rounded-full p-2 hover:bg-gray-100">
@@ -109,6 +120,7 @@ export default function VentaProducto() {
           ))}
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

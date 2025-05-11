@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NavnoCAdm from "./componentes/navCesionAdm.jsx";
+import Footer from "./componentes/footer.jsx";
 
 const AgregarProducto = () => {
   const [imagen, setImagen] = useState(null);
@@ -17,7 +18,7 @@ const AgregarProducto = () => {
       <NavnoCAdm />
 
       {/* Contenido principal */}
-      <main className="max-w-5xl mx-auto mt-10 flex flex-col lg:flex-row items-center justify-center gap-10">
+      <main className="max-w-5xl py-24 mx-auto mt-10 flex flex-col lg:flex-row items-center justify-center gap-10">
         {/* Área de imagen */}
         <div className="w-full lg:w-1/2 flex items-center justify-center border-2 border-dashed border-gray-400 rounded-3xl h-64 bg-[#fdfdf5]">
           <label
@@ -88,6 +89,7 @@ const AgregarProducto = () => {
           </form>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

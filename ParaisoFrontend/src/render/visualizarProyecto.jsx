@@ -7,6 +7,7 @@ import pc2 from "../assets/pCancer2.png";
 import pc3 from "../assets/pc3.png";
 import pc4 from "../assets/pc4.png";
 import Navno from "./componentes/navNocesion";
+import Footer from "./componentes/footer";
 
 export default function VisuProyecto() {
   return (
@@ -69,6 +70,7 @@ export default function VisuProyecto() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

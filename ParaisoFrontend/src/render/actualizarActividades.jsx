@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NavnoCAdm from "./componentes/navCesionAdm.jsx";
+import Footer from "./componentes/footer.jsx";
 
 const ActualizarActividad = () => {
   const [imagen, setImagen] = useState(null);
@@ -15,11 +16,12 @@ const ActualizarActividad = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f5dc] font-sans">
+      {/* Encabezado */}
       <NavnoCAdm />
 
       {/* Formulario principal */}
-      <main className="max-w-md mx-auto mt-10 bg-[#F5F0DC] p-6 rounded-3xl shadow-md border border-black">
-        <form className="space-y-4">
+      <main className="max-w-md py-24 mx-auto mt-10 bg-[#F5F0DC] p-6 rounded-3xl shadow-md border border-black">
+        <form className="space-y-4 mb-8">
           {/* Área de imagen */}
           <div className="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl h-40 bg-[#fdfdf5]">
             <label
@@ -101,6 +103,7 @@ const ActualizarActividad = () => {
           </div>
         </form>
       </main>
+      <Footer />
     </div>
   );
 };

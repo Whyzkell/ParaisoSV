@@ -31,9 +31,9 @@ export default function NavnoCCli() {
             </Link>
           </li>
           <li>
-            <Link to="/comprarrifa">
+            <Link to="/todas-rifas">
               <a href="#blog" className="hover:text-orange-500">
-                Comprar rifa
+                Rifas
               </a>
             </Link>
           </li>
