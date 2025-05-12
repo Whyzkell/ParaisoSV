@@ -43,4 +43,4 @@ export async function apiGet(ruta) {
       console.error('Error en apiGet:', error.message);
       throw error;
     }
-  }
+}
