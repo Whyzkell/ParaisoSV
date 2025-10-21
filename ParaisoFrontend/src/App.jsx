@@ -17,6 +17,7 @@ import AgregarProducto from "./render/agregarProducto.jsx";
 import ActualizarActividad from "./render/actualizarActividades.jsx";
 import DonarAlcancia from "./render/donarAlcancia.jsx";
 import TodasRifas from "./render/ToRifas.jsx";
+import EnviarDonacion from "./render/enviarDonacion.jsx";
 
 import perro from "./assets/perroSueter.png";
 import vector from "./assets/Vector.png";
@@ -253,6 +254,8 @@ function App() {
         <Route path="/actualizaractividad" element={<ActualizarActividad />} />
         <Route path="/donaralcancia" element={<DonarAlcancia />} />
         <Route path="/todas-rifas" element={<TodasRifas />} />
+        <Route path="/enviadonacion" element={<EnviarDonacion />} />
+
       </Routes>
     </Router>
   );

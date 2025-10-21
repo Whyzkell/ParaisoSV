@@ -32,6 +32,11 @@ export default function NavnoCCli() {
               </a>
             </Link>
           </li>
+          <li>
+  <Link to="/enviadonacion">
+    <a className="hover:text-orange-500">Enviar donación</a>
+  </Link>
+</li>
         </ul>
         <div className="flex gap-4">
           <button className="  text-orange-400 text-2xl">Juanito</button>
