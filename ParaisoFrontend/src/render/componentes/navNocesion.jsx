@@ -23,20 +23,8 @@ export default function Navno() {
               </a>
             </Link>
           </li>
-          <li>
-            <Link to="/ventaproducto">
-              <a href="#blog" className="hover:text-orange-500">
-                Comprar producto
-              </a>
-            </Link>
-          </li>
-          <li>
-            <Link to="/comprarrifa">
-              <a href="#blog" className="hover:text-orange-500">
-                Comprar rifa
-              </a>
-            </Link>
-          </li>
+          
+          
           <li>
             <Link to="/donaralcancia">
               <a href="#blog" className="hover:text-orange-500">

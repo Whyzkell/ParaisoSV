@@ -21,16 +21,8 @@ export default function NavnoCAdm() {
               Adoptar
             </Link>
           </li>
-          <li>
-            <Link to="/ventaproducto" className="hover:text-orange-500">
-              Comprar producto
-            </Link>
-          </li>
-          <li>
-            <Link to="/todas-rifas" className="hover:text-orange-500">
-              Rifas
-            </Link>
-          </li>
+          
+          
           <li>
             <Link to="/donaralcancia" className="hover:text-orange-500">
               Donar alcancia
@@ -48,15 +40,11 @@ export default function NavnoCAdm() {
                 <li className="px-4 py-2 hover:bg-orange-100">
                   <Link to="/crear-alcancia">Crear alcancía</Link>
                 </li>
-                <li className="px-4 py-2 hover:bg-orange-100">
-                  <Link to="/crearrifa">Crear rifa</Link>
-                </li>
+                
                 <li className="px-4 py-2 hover:bg-orange-100">
                   <Link to="/agregarmascota">Agregar mascota</Link>
                 </li>
-                <li className="px-4 py-2 hover:bg-orange-100">
-                  <Link to="/agregarproducto">Agregar producto</Link>
-                </li>
+                
                 <li className="px-4 py-2 hover:bg-orange-100">
                   <Link to="/actualizaractividad">Actualizar actividad</Link>
                 </li>

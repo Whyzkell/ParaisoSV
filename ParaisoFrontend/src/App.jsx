@@ -230,61 +230,7 @@ function App() {
                 </div>
               </section>
 
-              <section className="bg-[#F5F0E5] py-12 px-4">
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-                  {/* Imagen */}
-                  <div className="w-full md:w-1/2 justify-center">
-                    <img
-                      src={sponsors[currentIndex].image}
-                      alt={sponsors[currentIndex].name}
-                      className="rounded-[40px] object-cover w-10/12  shadow-lg"
-                    />
-                    {/* Indicadores */}
-                    <div className="flex justify-center w-10/12">
-                      <div className="bg-[#22B4B4] w-32 h-6 rounded-b-[15px] flex items-center justify-center gap-2">
-                        {sponsors.map((_, index) => (
-                          <div
-                            key={index}
-                            className={`w-2 h-2 rounded-full ${
-                              index === currentIndex
-                                ? "bg-white"
-                                : "bg-[#99d9d9]"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Texto */}
-                  <div className="w-full md:w-1/2 space-y-6">
-                    <h2 className="text-4xl font-bold text-[#06222E]">
-                      Patrocinadores
-                    </h2>
-                    <div className="bg-[#FFF4DE] p-6 rounded-[30px] shadow-md text-[#06222E]">
-                      <p className="text-sm">
-                        {sponsors[currentIndex].description}
-                      </p>
-                    </div>
-
-                    {/* Controles */}
-                    <div className="flex items-center gap-4 mt-4">
-                      <button
-                        onClick={prev}
-                        className="bg-[#06222E] text-white p-3 rounded-full hover:scale-105 transition"
-                      >
-                        <ArrowLeft size={20} />
-                      </button>
-                      <button
-                        onClick={next}
-                        className="bg-[#06222E] text-white p-3 rounded-full hover:scale-105 transition"
-                      >
-                        <ArrowRight size={20} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </section>
+              
 
               <Footer />
             </div>

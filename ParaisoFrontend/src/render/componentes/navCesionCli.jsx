@@ -23,20 +23,8 @@ export default function NavnoCCli() {
               </a>
             </Link>
           </li>
-          <li>
-            <Link to="/ventaproducto">
-              <a href="#blog" className="hover:text-orange-500">
-                Comprar producto
-              </a>
-            </Link>
-          </li>
-          <li>
-            <Link to="/todas-rifas">
-              <a href="#blog" className="hover:text-orange-500">
-                Rifas
-              </a>
-            </Link>
-          </li>
+          
+          
           <li>
             <Link to="/donaralcancia">
               <a href="#blog" className="hover:text-orange-500">
