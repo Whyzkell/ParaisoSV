@@ -1,0 +1,15 @@
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+*.iml
+.idea/
+.project
+.classpath
+.settings/
+.cache/
+
+# OS
+.DS_Store

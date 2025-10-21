@@ -1,0 +1,46 @@
+#!/bin/sh
+# Apache Maven Wrapper startup script (auto-downloads wrapper jar if missing)
+set -e
+
+# resolve links - $0 may be a symlink
+PRG="$0"
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`"/$link"
+  fi
+done
+BASEDIR=`dirname "$PRG"`
+BASEDIR=`cd "$BASEDIR" >/dev/null; pwd`
+
+WRAPPER_DIR="$BASEDIR/.mvn/wrapper"
+PROPERTIES_FILE="$WRAPPER_DIR/maven-wrapper.properties"
+JAR="$WRAPPER_DIR/maven-wrapper.jar"
+
+# Read properties
+distributionUrl=$(sed -n 's/^distributionUrl=//p' "$PROPERTIES_FILE")
+wrapperUrl=$(sed -n 's/^wrapperUrl=//p' "$PROPERTIES_FILE")
+
+# Download wrapper jar if missing
+if [ ! -f "$JAR" ]; then
+  echo "Downloading Maven Wrapper jar from $wrapperUrl"
+  mkdir -p "$WRAPPER_DIR"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$wrapperUrl" -o "$JAR"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -q "$wrapperUrl" -O "$JAR"
+  else
+    echo "Error: Need curl or wget to download Maven Wrapper jar." >&2
+    exit 1
+  fi
+fi
+
+JAVA_EXEC="java"
+if [ -n "$JAVA_HOME" ] ; then
+  JAVA_EXEC="$JAVA_HOME/bin/java"
+fi
+
+exec "$JAVA_EXEC" -Dmaven.multiModuleProjectDirectory="$BASEDIR" -cp "$JAR" org.apache.maven.wrapper.MavenWrapperMain "$@"
