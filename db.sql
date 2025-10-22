@@ -1,8 +1,8 @@
 /* ==== Crear base de datos (si no existe) ==== */
-IF DB_ID(N'ONGDonacionesDB') IS NULL
-    CREATE DATABASE ONGDonacionesDB;
+IF DB_ID(N'ParaisoSV') IS NULL
+    CREATE DATABASE ParaisoSV;
 GO
-USE ONGDonacionesDB;
+USE ParaisoSV;
 GO
 
 /* ==== Limpieza idempotente (para re-ejecutar el script) ==== */
