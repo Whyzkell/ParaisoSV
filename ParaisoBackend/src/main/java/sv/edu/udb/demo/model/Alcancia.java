@@ -2,34 +2,26 @@ package sv.edu.udb.demo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Entity
-@Table(name = "Alcancia")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Entity @Table(name="Alcancia", schema="dbo")
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Alcancia {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="Id")
     private Integer id;
 
-    @Column(name = "Descr")
+    @Column(name="Descr", length=300)
     private String descr;
 
-    @Column(name = "PrecioMeta", nullable = false)
-    private Double precioMeta;
+    @Column(name="PrecioMeta", nullable=false, precision=12, scale=2)
+    private BigDecimal precioMeta;
 
-    @Column(name = "PrecioActual", nullable = false)
-    private Double precioActual = 0.0;
+    @Column(name="PrecioActual", nullable=false, precision=12, scale=2)
+    private BigDecimal precioActual;
 
-    @Column(name = "CreadoEn", nullable = false)
-    private LocalDateTime creadoEn = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "alcancia", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Donaciones> donaciones;
+    @Column(name="CreadoEn", insertable=false, updatable=false)
+    private LocalDateTime creadoEn;
 }
