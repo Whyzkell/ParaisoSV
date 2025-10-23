@@ -24,19 +24,41 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
-                        // Preflight CORS
+                        // Preflight CORS (navegadores)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Públicos de lectura
+                        // ---- Públicos (lectura) ----
                         .requestMatchers(HttpMethod.GET, "/api/hello").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/alcancias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/proyectos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/perros/**").permitAll()
 
-                        // Protegidos
+                        // ---- Donaciones ----
                         .requestMatchers(HttpMethod.POST, "/api/donaciones").hasAnyRole("USER","ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/api/donaciones/**").hasRole("ADMIN")
 
-                        // Todo lo demás requiere autenticación
+                        // ---- Usuarios (gestión) ----
+                        .requestMatchers(HttpMethod.POST,   "/api/usuarios").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,    "/api/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,    "/api/usuarios/**").hasRole("ADMIN") // si quieres que listar sea solo admin
+
+                        // ---- Alcancías (gestión) ----
+                        .requestMatchers(HttpMethod.POST,   "/api/alcancias").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,    "/api/alcancias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/alcancias/**").hasRole("ADMIN")
+
+                        // ---- Proyectos (gestión) ----
+                        .requestMatchers(HttpMethod.POST,   "/api/proyectos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,    "/api/proyectos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/proyectos/**").hasRole("ADMIN")
+
+                        // ---- Perros (gestión) ----
+                        .requestMatchers(HttpMethod.POST,   "/api/perros").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,    "/api/perros/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/perros/**").hasRole("ADMIN")
+
+                        // Todo lo demás autenticado
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -50,7 +72,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // CORS (útil si NO usas proxy de Vite). Ajusta orígenes según necesites.
+    // CORS: solo necesario para llamadas desde navegador (Postman lo ignora).
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -64,4 +86,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
