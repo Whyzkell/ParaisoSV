@@ -20,25 +20,31 @@ public class UsuarioController {
 
     private final UsuarioService service;
 
-    // GET /api/usuarios
+    // GET (con filtros: nombre, correo, rol)
     @GetMapping
-    public List<Usuario> all() { return service.findAll(); }
+    public List<Usuario> all(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String correo,
+            @RequestParam(required = false) String rol
+    ) {
+        return service.findAll().stream()
+                .filter(u -> nombre == null || (u.getNombre() != null && u.getNombre().toLowerCase().contains(nombre.toLowerCase())))
+                .filter(u -> correo == null || (u.getCorreo() != null && u.getCorreo().toLowerCase().contains(correo.toLowerCase())))
+                .filter(u -> rol == null || (u.getRol() != null && u.getRol().equalsIgnoreCase(rol)))
+                .toList();
+    }
 
-    // GET /api/usuarios/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> byId(@PathVariable Integer id) {
         try { return ResponseEntity.ok(service.findById(id)); }
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
-    // POST /api/usuarios
     @PostMapping
     public ResponseEntity<Usuario> create(@Valid @RequestBody UsuarioCreateDTO dto) {
-        Usuario created = service.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
-    // PUT /api/usuarios/{id}  (actualización parcial sencilla)
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> update(@PathVariable Integer id,
                                           @RequestBody UsuarioUpdateDTO dto) {
@@ -46,7 +52,6 @@ public class UsuarioController {
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
-    // PUT /api/usuarios/{id}/password
     @PutMapping("/{id}/password")
     public ResponseEntity<Void> changePassword(@PathVariable Integer id,
                                                @Valid @RequestBody PasswordChangeDTO body) {
@@ -54,7 +59,6 @@ public class UsuarioController {
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
-    // DELETE /api/usuarios/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         try { service.delete(id); return ResponseEntity.noContent().build(); }

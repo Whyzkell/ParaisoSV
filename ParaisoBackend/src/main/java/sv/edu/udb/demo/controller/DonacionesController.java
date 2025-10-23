@@ -2,14 +2,21 @@ package sv.edu.udb.demo.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import sv.edu.udb.demo.dto.DonacionesCreateDTO;
 import sv.edu.udb.demo.model.Donaciones;
 import sv.edu.udb.demo.model.Usuario;
+import sv.edu.udb.demo.repository.DonacionesRepository;
 import sv.edu.udb.demo.repository.UsuarioRepository;
 import sv.edu.udb.demo.service.DonacionesService;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/donaciones")
@@ -18,12 +25,39 @@ public class DonacionesController {
 
     private final DonacionesService service;
     private final UsuarioRepository usuarioRepo;
+    private final DonacionesRepository donacionesRepo;
 
+    // POST (crear donación + suma a PrecioActual)
     @PostMapping
     public Donaciones crear(@AuthenticationPrincipal UserDetails auth,
                             @Valid @RequestBody DonacionesCreateDTO dto) {
         Usuario u = usuarioRepo.findByCorreo(auth.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario app no encontrado"));
         return service.crearDonacion(u.getId(), dto);
+    }
+
+    // GET con filtros: usuarioId, alcanciaId, montoMin/Max, rango de fechas [desde, hasta]
+    @GetMapping
+    public List<Donaciones> listar(
+            @RequestParam(required = false) Integer usuarioId,
+            @RequestParam(required = false) Integer alcanciaId,
+            @RequestParam(required = false) BigDecimal montoMin,
+            @RequestParam(required = false) BigDecimal montoMax,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta
+    ) {
+        var all = donacionesRepo.findAll();
+
+        LocalDateTime from = (desde == null) ? null : desde.atStartOfDay();
+        LocalDateTime to   = (hasta == null) ? null : hasta.plusDays(1).atStartOfDay(); // inclusivo
+
+        return all.stream()
+                .filter(d -> usuarioId == null || (d.getUsuario()!=null && usuarioId.equals(d.getUsuario().getId())))
+                .filter(d -> alcanciaId == null || (d.getAlcancia()!=null && alcanciaId.equals(d.getAlcancia().getId())))
+                .filter(d -> montoMin == null || (d.getCantidadDonada()!=null && d.getCantidadDonada().compareTo(montoMin) >= 0))
+                .filter(d -> montoMax == null || (d.getCantidadDonada()!=null && d.getCantidadDonada().compareTo(montoMax) <= 0))
+                .filter(d -> from == null || (d.getFecha()!=null && !d.getFecha().isBefore(from)))
+                .filter(d -> to == null || (d.getFecha()!=null && d.getFecha().isBefore(to)))
+                .toList();
     }
 }

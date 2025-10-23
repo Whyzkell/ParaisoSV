@@ -19,24 +19,33 @@ public class PerrosController {
 
     private final PerroEnAdopcionService service;
 
-    // GET /api/perros  (público)
+    // GET (con filtros: nombre, raza, edadMin, edadMax)
     @GetMapping
-    public List<PerroEnAdopcion> listar() { return service.findAll(); }
+    public List<PerroEnAdopcion> listar(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String raza,
+            @RequestParam(required = false) Integer edadMin,
+            @RequestParam(required = false) Integer edadMax
+    ) {
+        return service.findAll().stream()
+                .filter(p -> nombre == null || (p.getNombre() != null && p.getNombre().toLowerCase().contains(nombre.toLowerCase())))
+                .filter(p -> raza == null || (p.getRaza() != null && p.getRaza().toLowerCase().contains(raza.toLowerCase())))
+                .filter(p -> edadMin == null || (p.getEdad() != null && p.getEdad() >= edadMin))
+                .filter(p -> edadMax == null || (p.getEdad() != null && p.getEdad() <= edadMax))
+                .toList();
+    }
 
-    // GET /api/perros/{id}  (público)
     @GetMapping("/{id}")
     public ResponseEntity<PerroEnAdopcion> porId(@PathVariable Integer id) {
         try { return ResponseEntity.ok(service.findById(id)); }
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
-    // POST /api/perros (admin)
     @PostMapping
     public ResponseEntity<PerroEnAdopcion> crear(@Valid @RequestBody PerroCreateDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
-    // PUT /api/perros/{id} (admin)
     @PutMapping("/{id}")
     public ResponseEntity<PerroEnAdopcion> actualizar(@PathVariable Integer id,
                                                       @Valid @RequestBody PerroUpdateDTO dto) {
@@ -44,7 +53,6 @@ public class PerrosController {
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
-    // DELETE /api/perros/{id} (admin)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try { service.delete(id); return ResponseEntity.noContent().build(); }

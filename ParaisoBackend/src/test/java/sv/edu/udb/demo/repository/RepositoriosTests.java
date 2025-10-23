@@ -1,17 +1,20 @@
 package sv.edu.udb.demo.repository;
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import sv.edu.udb.demo.model.*;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")   // usa H2 o la config de pruebas que tengas
 @Transactional
 class RepositoriosTests {
 
@@ -45,6 +48,8 @@ class RepositoriosTests {
 
         assertTrue(encontrado.isPresent());
         assertEquals("Carlos", encontrado.get().getNombre());
+        // si tu columna tiene default de fecha/creación, esto será no-nulo:
+        // si no, puedes comentar esta línea
         assertNotNull(encontrado.get().getCreadoEn());
     }
 
@@ -53,14 +58,16 @@ class RepositoriosTests {
     void guardarYBuscarAlcancia() {
         Alcancia a = new Alcancia();
         a.setDescr("Alcancia test");
-        a.setPrecioMeta(1000.0);
-        a.setPrecioActual(0.0);
+        a.setPrecioMeta(new BigDecimal("1000.00"));
+        a.setPrecioActual(BigDecimal.ZERO);
 
         Alcancia guardada = alcanciaRepository.save(a);
 
         Optional<Alcancia> encontrado = alcanciaRepository.findById(guardada.getId());
         assertTrue(encontrado.isPresent());
         assertEquals("Alcancia test", encontrado.get().getDescr());
+        assertEquals(0, new BigDecimal("1000.00").compareTo(encontrado.get().getPrecioMeta()));
+        assertEquals(0, BigDecimal.ZERO.compareTo(encontrado.get().getPrecioActual()));
         assertNotNull(encontrado.get().getCreadoEn());
     }
 
@@ -76,18 +83,19 @@ class RepositoriosTests {
 
         Alcancia a = new Alcancia();
         a.setDescr("Alcancia 1");
-        a.setPrecioMeta(500.0);
+        a.setPrecioMeta(new BigDecimal("500.00"));
+        a.setPrecioActual(BigDecimal.ZERO);
         alcanciaRepository.save(a);
 
         Donaciones d = new Donaciones();
         d.setUsuario(u);
         d.setAlcancia(a);
-        d.setCantidadDonada(50.0);
+        d.setCantidadDonada(new BigDecimal("50.00"));
         donacionesRepository.save(d);
 
         List<Donaciones> donaciones = donacionesRepository.findAll();
         assertFalse(donaciones.isEmpty());
-        assertEquals(50.0, donaciones.get(0).getCantidadDonada());
+        assertEquals(0, new BigDecimal("50.00").compareTo(donaciones.get(0).getCantidadDonada()));
         assertNotNull(donaciones.get(0).getFecha());
     }
 
