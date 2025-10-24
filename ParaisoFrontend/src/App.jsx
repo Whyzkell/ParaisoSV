@@ -255,6 +255,7 @@ function App() {
         <Route path="/donaralcancia" element={<DonarAlcancia />} />
         <Route path="/todas-rifas" element={<TodasRifas />} />
         <Route path="/enviadonacion" element={<EnviarDonacion />} />
+<<<<<<< HEAD
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -271,6 +272,9 @@ function App() {
           <Route path="/admin/perros/nuevo" element={<AgregarMascota />} />
           <Route path="/admin/donaciones" element={<Donaciones />} />
         </Route>
+=======
+
+>>>>>>> parent of d6a2a88 (rutas y peticiones)
       </Routes>
     </Router>
   );
