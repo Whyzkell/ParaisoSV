@@ -28,7 +28,6 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Públicos
                         .requestMatchers("/auth/**").permitAll()
