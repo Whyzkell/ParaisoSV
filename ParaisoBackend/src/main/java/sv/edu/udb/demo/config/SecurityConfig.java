@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,23 +28,31 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints públicos
+                        // Públicos (auth + archivos + lectura pública)
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/files/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/hello").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/alcancias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/proyectos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/perros/**").permitAll()
 
-                        // Endpoints protegidos por rol
+                        // Subida de archivos (solo ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/api/files").hasRole("ADMIN")
+
+                        // Donaciones
                         .requestMatchers(HttpMethod.POST, "/api/donaciones").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/donaciones/**").hasRole("ADMIN")
 
+                        // Usuarios (solo ADMIN)
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasRole("ADMIN")
 
+                        // Alcancías / Proyectos / Perros (solo ADMIN para mutaciones)
                         .requestMatchers(HttpMethod.POST, "/api/alcancias").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/alcancias/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/alcancias/**").hasRole("ADMIN")
@@ -59,32 +68,19 @@ public class SecurityConfig {
                         // Cualquier otro requiere autenticación
                         .anyRequest().authenticated()
                 )
+                // Solo JWT (sin basic/form login)
                 .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
                 .formLogin(form -> form.disable())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/files/**").permitAll()   // <--- agrega esto
-                        .requestMatchers(HttpMethod.GET, "/api/hello").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/alcancias/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/proyectos/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/perros/**").permitAll()
-                        // ... resto de tus reglas (donaciones USER/ADMIN, CRUD ADMIN, etc.)
-                        .anyRequest().authenticated()
-                )
-        ;
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
-    // CORS: solo necesario para llamadas desde navegador (Postman lo ignora).
+    // CORS: necesario si el frontend llama directo
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
