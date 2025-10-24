@@ -62,7 +62,19 @@ public class SecurityConfig {
                 .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
                 .formLogin(form -> form.disable())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(Customizer.withDefaults());
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/files/**").permitAll()   // <--- agrega esto
+                        .requestMatchers(HttpMethod.GET, "/api/hello").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/alcancias/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/proyectos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/perros/**").permitAll()
+                        // ... resto de tus reglas (donaciones USER/ADMIN, CRUD ADMIN, etc.)
+                        .anyRequest().authenticated()
+                )
+        ;
 
         return http.build();
     }
