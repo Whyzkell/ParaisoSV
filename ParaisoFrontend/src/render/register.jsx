@@ -1,43 +1,57 @@
 import React, { useState } from "react";
 import gatico from "../assets/gatico.png";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { apiPost } from "../services/api"; // Ajusta la ruta según tu estructura
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
+
   const [formData, setFormData] = useState({
     email: "",
-    nombre: "",
     password: "",
     confirmarPassword: "",
   });
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.email || !formData.password) {
+      alert("Completa email y contraseña.");
+      return;
+    }
     if (formData.password !== formData.confirmarPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
 
+    setSubmitting(true);
     try {
-      const response = await apiPost("registro", {
+      await register({
         email: formData.email,
-        nombre: formData.nombre,
         password: formData.password,
       });
 
-      console.log("Respuesta del backend:", response);
-      alert("Registro exitoso");
+      alert("Registro exitoso. Ahora inicia sesión.");
+      navigate("/login", { replace: true }); // No crea sesión automáticamente
     } catch (error) {
       console.error("Error al registrar:", error);
-      alert("Error al registrar usuario");
+      const msg =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Error al registrar usuario";
+      alert(msg);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -57,18 +71,12 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
+              required
+              autoComplete="email"
+              placeholder="tucorreo@dominio.com"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Nombre</label>
-            <input
-              type="text"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
-            />
-          </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Contraseña</label>
             <input
@@ -77,8 +85,12 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
+              required
+              autoComplete="new-password"
+              placeholder="••••••••"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">
               Ingrese otra vez la contraseña
@@ -89,13 +101,18 @@ const Register = () => {
               value={formData.confirmarPassword}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
+              required
+              autoComplete="new-password"
+              placeholder="••••••••"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full py-3 bg-[#EF5B00] text-white font-semibold rounded-md"
+            className="w-full py-3 bg-[#EF5B00] text-white font-semibold rounded-md disabled:opacity-60"
+            disabled={submitting}
           >
-            Registrarse
+            {submitting ? "Registrando..." : "Registrarse"}
           </button>
         </form>
       </div>

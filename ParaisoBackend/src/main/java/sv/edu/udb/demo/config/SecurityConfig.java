@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/alcancias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/proyectos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/perros/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
 
                         // Subida de archivos (solo ADMIN)
                         .requestMatchers(HttpMethod.POST, "/api/files").hasRole("ADMIN")
@@ -46,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/donaciones/**").hasRole("ADMIN")
 
                         // Usuarios (solo ADMIN)
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasRole("ADMIN")
