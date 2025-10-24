@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Públicos (auth + archivos + lectura pública)
+                        // Públicos
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/files/**").permitAll()
@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasRole("ADMIN")
 
-                        // Alcancías / Proyectos / Perros (solo ADMIN para mutaciones)
+                        // Alcancías / Proyectos / Perros (mutaciones solo ADMIN)
                         .requestMatchers(HttpMethod.POST, "/api/alcancias").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/alcancias/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/alcancias/**").hasRole("ADMIN")
@@ -69,8 +69,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // Solo JWT (sin basic/form login)
-                .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
-                .formLogin(form -> form.disable())
+                .httpBasic(h -> h.disable())
+                .formLogin(f -> f.disable())
                 .cors(Customizer.withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -80,7 +80,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
-    // CORS: necesario si el frontend llama directo
+    // CORS para desarrollo (Vite). Postman ignora CORS.
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
