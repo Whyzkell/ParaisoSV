@@ -9,6 +9,7 @@ const Register = () => {
   const { register } = useAuth();
 
   const [formData, setFormData] = useState({
+    nombre: "", // <-- CAMBIO: Añadido
     email: "",
     password: "",
     confirmarPassword: "",
@@ -25,8 +26,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      alert("Completa email y contraseña.");
+    // <-- CAMBIO: Validación
+    if (!formData.nombre || !formData.email || !formData.password) {
+      alert("Completa nombre, email y contraseña.");
       return;
     }
     if (formData.password !== formData.confirmarPassword) {
@@ -36,8 +38,10 @@ const Register = () => {
 
     setSubmitting(true);
     try {
+      // <-- CAMBIO: Envío de datos
       await register({
-        email: formData.email,
+        nombre: formData.nombre,
+        correo: formData.email, // Mapeamos 'email' del form a 'correo'
         password: formData.password,
       });
 
@@ -61,6 +65,21 @@ const Register = () => {
       <div className="flex-1 flex flex-col justify-center bg-[#F3EFD2] px-10 py-12 rounded-l-3xl">
         <h1 className="text-4xl font-bold mb-10 text-gray-900">Sé uno más</h1>
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* <-- CAMBIO: Añadido bloque de Nombre --> */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Nombre</label>
+            <input
+              type="text"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
+              required
+              autoComplete="name"
+              placeholder="Tu nombre completo"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">
               Correo electrónico
