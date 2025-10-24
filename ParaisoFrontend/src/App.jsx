@@ -18,6 +18,8 @@ import ActualizarActividad from "./render/actualizarActividades.jsx";
 import DonarAlcancia from "./render/donarAlcancia.jsx";
 import TodasRifas from "./render/ToRifas.jsx";
 import EnviarDonacion from "./render/enviarDonacion.jsx";
+import RequireAuth from "./render/requireAuth.jsx";
+import RequireAdmin from "./render/requireAdmin.jsx";
 
 import perro from "./assets/perroSueter.png";
 import vector from "./assets/Vector.png";
@@ -231,8 +233,6 @@ function App() {
                 </div>
               </section>
 
-              
-
               <Footer />
             </div>
           }
@@ -255,21 +255,21 @@ function App() {
         <Route path="/donaralcancia" element={<DonarAlcancia />} />
         <Route path="/todas-rifas" element={<TodasRifas />} />
         <Route path="/enviadonacion" element={<EnviarDonacion />} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/register" element={<Register/>} />
-        <Route path="/" element={<VisualizarProyecto/>} />
-        <Route path="/perros" element={<VisualizarMascota/>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/perros" element={<VSMascota />} />
 
         {/* Rutas para cualquier usuario logueado */}
-        <Route element={<RequireAuth/>}>
-          <Route path="/donar" element={<EnviarDonacion/>} />
+        <Route element={<RequireAuth />}>
+          <Route path="/donar" element={<EnviarDonacion />} />
         </Route>
 
         {/* Rutas solo ADMIN */}
-        <Route element={<RequireAdmin/>}>
-          <Route path="/admin/alcancias/nueva" element={<CrearAlcancia/>} />
-          <Route path="/admin/perros/nuevo" element={<AgregarMascota/>} />
-          <Route path="/admin/donaciones" element={<VerDonaciones/>} />
+        <Route element={<RequireAdmin />}>
+          <Route path="/admin/alcancias/nueva" element={<CrearAlcancia />} />
+          <Route path="/admin/perros/nuevo" element={<AgregarMascota />} />
+          <Route path="/admin/donaciones" element={<Donaciones />} />
         </Route>
       </Routes>
     </Router>
