@@ -31,7 +31,6 @@ const Donaciones = () => {
   useEffect(() => {
     const fetchDonaciones = async () => {
       // 6. Proteger la vista a nivel de frontend
-      // (Aunque el backend ya la protege, esto es mejor UI)
       if (navKind !== "admin" || !user || !user.token) {
         setError(
           "Acceso denegado. Debes ser Administrador para ver esta página."
@@ -109,7 +108,7 @@ const Donaciones = () => {
 
         {!loading && !error && donaciones.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* 10. Mapear los datos reales */}
+            {/* 10. Mapear los datos del DTO */}
             {donaciones.map((dona) => (
               <div
                 key={dona.id}
@@ -117,19 +116,19 @@ const Donaciones = () => {
               >
                 <div className="flex justify-between items-center">
                   <h2 className="font-bold text-gray-700">
-                    {/* Usamos '?' por si el usuario fue borrado (null safety) */}
-                    {dona.usuario?.nombre || "Donador Anónimo"}
+                    {/* 👇 CAMBIO: Usar usuarioNombre del DTO */}
+                    {dona.usuarioNombre || "Donador Anónimo"}
                   </h2>
                   <span className="text-sm text-gray-500">
                     {formatDate(dona.fecha)}
                   </span>
                 </div>
                 <p className="mt-4 text-gray-600 font-semibold">
-                  Alcancía: {dona.alcancia?.descr || "N/A"}
+                  {/* 👇 CAMBIO: Usar alcanciaDescr del DTO */}
+                  Alcancía: {dona.alcanciaDescr || "N/A"}
                 </p>
                 <p className="mt-2 text-teal-600 font-bold text-xl">
-                  {/* El backend envía 'cantidadDonada' */}$
-                  {Number(dona.cantidadDonada).toFixed(2)}
+                  ${Number(dona.cantidadDonada).toFixed(2)}
                 </p>
               </div>
             ))}
