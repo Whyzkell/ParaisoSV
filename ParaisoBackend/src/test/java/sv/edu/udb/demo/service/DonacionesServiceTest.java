@@ -1,92 +1,172 @@
 package sv.edu.udb.demo.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import sv.edu.udb.demo.dto.DonacionesCreateDTO;
 import sv.edu.udb.demo.model.Alcancia;
+import sv.edu.udb.demo.model.Donaciones;
 import sv.edu.udb.demo.model.Usuario;
 import sv.edu.udb.demo.repository.AlcanciaRepository;
 import sv.edu.udb.demo.repository.DonacionesRepository;
 import sv.edu.udb.demo.repository.UsuarioRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
-class DonacionesServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class DonacionesServiceTest {
 
-    @Autowired DonacionesService service;              // tu service REAL
-    @Autowired UsuarioRepository usuarioRepo;          // repos REALES
-    @Autowired AlcanciaRepository alcanciaRepo;
-    @Autowired DonacionesRepository donacionesRepo;
+    @Mock
+    private DonacionesRepository donacionesRepo;
+    @Mock
+    private AlcanciaRepository alcanciaRepo;
+    @Mock
+    private UsuarioRepository usuarioRepo;
 
-    private Integer userId;
-    private Integer alcId;
+    @InjectMocks
+    private DonacionesService donacionesService;
 
-    @BeforeEach
-    void setUp() {
-        // Usuario
-        Usuario u = Usuario.builder()
-                .nombre("Tester")
-                .correo("tester@demo.com")
-                .password("hash") // no importa en el service
-                .rol("USER")
+    @Test
+    void cuandoCrearDonacion_conDatosValidos_entoncesGuardaDonacionYActualizaAlcancia() {
+        // 1. Arrange (Preparar)
+        Integer idUsuario = 1;
+        Integer idAlcancia = 10;
+        BigDecimal montoDonacion = new BigDecimal("50.00");
+        BigDecimal montoPrevioAlcancia = new BigDecimal("100.00");
+        // El resultado esperado de la suma (100.00 + 50.00)
+        BigDecimal montoEsperadoAlcancia = new BigDecimal("150.00");
+
+        DonacionesCreateDTO dto = new DonacionesCreateDTO(idAlcancia, montoDonacion);
+
+        // Creamos los objetos falsos que retornarán los mocks
+        Usuario usuarioFalso = Usuario.builder().id(idUsuario).nombre("Donador").build();
+        Alcancia alcanciaFalsa = Alcancia.builder()
+                .id(idAlcancia)
+                .descr("Ahorro")
+                .precioActual(montoPrevioAlcancia) // Estado inicial
                 .build();
-        u = usuarioRepo.save(u);
-        userId = u.getId();
 
-        // Alcancía
-        Alcancia a = Alcancia.builder()
-                .descr("Rescate Canino")
-                .precioMeta(new BigDecimal("500.00"))
-                .precioActual(new BigDecimal("50.00"))
+        // Creamos el objeto Donacion que esperamos que 'save' retorne
+        Donaciones donacionGuardadaFalsa = Donaciones.builder()
+                .id(123) // Un ID autogenerado
+                .usuario(usuarioFalso)
+                .alcancia(alcanciaFalsa)
+                .cantidadDonada(montoDonacion)
                 .build();
-        a = alcanciaRepo.save(a);
-        alcId = a.getId();
+
+        // Configuración de Mocks (when... thenReturn)
+        when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioFalso));
+        when(alcanciaRepo.findById(idAlcancia)).thenReturn(Optional.of(alcanciaFalsa));
+        when(donacionesRepo.save(any(Donaciones.class))).thenReturn(donacionGuardadaFalsa);
+        // No necesitamos mockear alcanciaRepo.save(), ya que la lógica principal
+        // es la mutación del objeto 'alcanciaFalsa' en memoria.
+
+        // 2. Act (Actuar)
+        Donaciones resultado = donacionesService.crearDonacion(idUsuario, dto);
+
+        // 3. Assert (Verificar)
+
+        // A) Verificar el objeto retornado
+        assertThat(resultado).isNotNull();
+        assertThat(resultado.getId()).isEqualTo(123);
+        assertThat(resultado.getUsuario().getId()).isEqualTo(idUsuario);
+        assertThat(resultado.getCantidadDonada().compareTo(montoDonacion)).isEqualTo(0);
+
+        // B) Verificar que el 'precioActual' de la alcancía se modificó ANTES de guardar
+        // Comprobamos el estado del objeto 'alcanciaFalsa' (que fue mutado por el servicio)
+        assertThat(alcanciaFalsa.getPrecioActual().compareTo(montoEsperadoAlcancia)).isEqualTo(0);
+
+        // C) Verificar que los 'save' fueron llamados
+        verify(donacionesRepo, times(1)).save(any(Donaciones.class));
+        // Verificamos que se llamó a guardar la alcancía (con su estado mutado)
+        verify(alcanciaRepo, times(1)).save(alcanciaFalsa);
+    }
+    
+    @Test
+    void cuandoCrearDonacion_conUsuarioInvalido_entoncesLanzaExcepcion() {
+        // 1. Arrange
+        Integer idUsuario = 99; // ID no existente
+        DonacionesCreateDTO dto = new DonacionesCreateDTO(1, new BigDecimal("10.00"));
+        
+        when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.empty());
+
+        // 2. Act & 3. Assert
+        assertThatThrownBy(() -> donacionesService.crearDonacion(idUsuario, dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Usuario no existe");
+
+        // Verificamos que la ejecución se detuvo y no se llamó a otros repos
+        verify(alcanciaRepo, never()).findById(anyInt());
+        verify(donacionesRepo, never()).save(any(Donaciones.class));
+        verify(alcanciaRepo, never()).save(any(Alcancia.class));
     }
 
     @Test
-    void donar_ok_actualiza_total_y_guarda() {
-        var dto = new DonacionesCreateDTO(alcId, new BigDecimal("25.00"));
-        var don = service.crearDonacion(userId, dto);
+    void cuandoCrearDonacion_conAlcanciaInvalida_entoncesLanzaExcepcion() {
+        // 1. Arrange
+        Integer idUsuario = 1;
+        Integer idAlcancia = 99; // ID no existente
+        DonacionesCreateDTO dto = new DonacionesCreateDTO(idAlcancia, new BigDecimal("10.00"));
+        
+        // El usuario sí se encuentra
+        when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(Usuario.builder().id(idUsuario).build()));
+        // Pero la alcancía no
+        when(alcanciaRepo.findById(idAlcancia)).thenReturn(Optional.empty());
 
-        assertNotNull(don.getId());
-        var alc = alcanciaRepo.findById(alcId).orElseThrow();
-        assertEquals(new BigDecimal("75.00"), alc.getPrecioActual()); // 50 + 25
-        assertEquals(1, donacionesRepo.count());
+        // 2. Act & 3. Assert
+        assertThatThrownBy(() -> donacionesService.crearDonacion(idUsuario, dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Alcancía no existe");
+        
+        // Verificamos que no se intentó guardar nada
+        verify(donacionesRepo, never()).save(any(Donaciones.class));
+        verify(alcanciaRepo, never()).save(any(Alcancia.class));
     }
 
     @Test
-    void donar_falla_usuario_no_existe() {
-        var dto = new DonacionesCreateDTO(alcId, new BigDecimal("10.00"));
-        var ex = assertThrows(IllegalArgumentException.class,
-                () -> service.crearDonacion(999999, dto));
-        assertTrue(ex.getMessage().toLowerCase().contains("usuario"));
-        assertEquals(0, donacionesRepo.count());
-    }
+    void cuandoCrearDonacion_conMontoCero_entoncesLanzaExcepcion() {
+        // 1. Arrange
+        Integer idUsuario = 1;
+        Integer idAlcancia = 10;
+        // DTO con monto 0
+        DonacionesCreateDTO dto = new DonacionesCreateDTO(idAlcancia, BigDecimal.ZERO);
 
-    @Test
-    void donar_falla_alcancia_no_existe() {
-        var dto = new DonacionesCreateDTO(999999, new BigDecimal("10.00"));
-        var ex = assertThrows(IllegalArgumentException.class,
-                () -> service.crearDonacion(userId, dto));
-        assertTrue(ex.getMessage().toLowerCase().contains("alcanc"));
-        assertEquals(0, donacionesRepo.count());
-    }
+        // Los repositorios encuentran las entidades
+        when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(Usuario.builder().id(idUsuario).build()));
+        when(alcanciaRepo.findById(idAlcancia)).thenReturn(Optional.of(Alcancia.builder().id(idAlcancia).build()));
 
+        // 2. Act & 3. Assert
+        assertThatThrownBy(() -> donacionesService.crearDonacion(idUsuario, dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("La cantidad debe ser mayor a 0");
+
+        // Verificamos que, aunque se encontraron las entidades, no se guardó nada
+        verify(donacionesRepo, never()).save(any(Donaciones.class));
+        verify(alcanciaRepo, never()).save(any(Alcancia.class));
+    }
+    
     @Test
-    void donar_falla_monto_no_positivo() {
-        var dto = new DonacionesCreateDTO(alcId, new BigDecimal("0.00"));
-        var ex = assertThrows(IllegalArgumentException.class,
-                () -> service.crearDonacion(userId, dto));
-        assertTrue(ex.getMessage().toLowerCase().contains("mayor a 0"));
-        assertEquals(0, donacionesRepo.count());
+    void cuandoCrearDonacion_conMontoNegativo_entoncesLanzaExcepcion() {
+        // 1. Arrange
+        Integer idUsuario = 1;
+        Integer idAlcancia = 10;
+        // DTO con monto negativo
+        DonacionesCreateDTO dto = new DonacionesCreateDTO(idAlcancia, new BigDecimal("-50.00"));
+
+        when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(Usuario.builder().id(idUsuario).build()));
+        when(alcanciaRepo.findById(idAlcancia)).thenReturn(Optional.of(Alcancia.builder().id(idAlcancia).build()));
+
+        // 2. Act & 3. Assert
+        assertThatThrownBy(() -> donacionesService.crearDonacion(idUsuario, dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("La cantidad debe ser mayor a 0");
     }
 }
