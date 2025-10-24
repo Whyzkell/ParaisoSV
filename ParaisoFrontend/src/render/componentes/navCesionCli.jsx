@@ -33,11 +33,6 @@ export default function NavnoCCli() {
               Donar alcancia
             </Link>
           </li>
-          <li>
-            <Link to="/enviadonacion" className="hover:text-orange-500">
-              Enviar donación
-            </Link>
-          </li>
         </ul>
 
         <div className="flex gap-4">
