@@ -5,8 +5,11 @@ import { useState } from "react";
 import chuchitos from "../assets/chuchitos.png";
 import hosh from "../assets/hosh.png";
 import { useNavigate } from "react-router-dom";
-import NavnoCCli from "./componentes/navCesionCli.jsx";
 import Footer from "./componentes/footer.jsx";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 
 const pets = [
   {
@@ -18,8 +21,8 @@ const pets = [
   { name: "Firulais", breed: "Beagle", age: "1 año", image: hosh },
   { name: "Pepe", breed: "Beagle", age: "1 año", image: hosh },
 ];
-
 export default function AdoptarMascota() {
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -28,7 +31,8 @@ export default function AdoptarMascota() {
 
   return (
     <div className="bg-yellow-50 min-h-screen">
-      <NavnoCCli />
+      {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
 
       <section className="flex text-center px-6 w-full">
         <div className="flex-row justify-items-start justify-start ml-8 w-2/5 mt-8">

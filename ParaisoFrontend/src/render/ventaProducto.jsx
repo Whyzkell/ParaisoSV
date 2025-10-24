@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import comida from "../assets/comida.png";
 import comidaJpeg from "../assets/comida.jpeg";
-import NavnoCCli from "./componentes/navCesionCli.jsx";
 import Footer from "./componentes/footer.jsx";
 import { useNavigate } from "react-router-dom";
 import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
