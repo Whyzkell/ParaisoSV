@@ -1,95 +1,69 @@
 import React, { useState } from "react";
-import NavnoCAdm from "./componentes/navCesionAdm.jsx";
-import Footer from "./componentes/footer.jsx";
+import { uploadFile, perrosApi } from "../services/api";
 
-const AgregarMascota = () => {
-  const [imagen, setImagen] = useState(null);
 
-  const handleImagenChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImagen(URL.createObjectURL(file));
-    }
-  };
+export default function AgregarMascota() {
+const [nombre, setNombre] = useState("");
+const [raza, setRaza] = useState("");
+const [edad, setEdad] = useState(0);
+const [descr, setDescr] = useState("");
+const [file, setFile] = useState(null);
+const [preview, setPreview] = useState(null);
+const [ok, setOk] = useState("");
+const [error, setError] = useState("");
 
-  return (
-    <div className="min-h-screen bg-[#f5f5dc] font-sans">
-      {/* Encabezado */}
-      <NavnoCAdm />
 
-      {/* Contenido principal */}
-      <main className="max-w-5xl py-24 mx-auto mt-10 flex flex-col lg:flex-row items-center justify-center gap-10">
-        {/* Área de imagen */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center border-2 border-dashed border-gray-400 rounded-3xl h-64 bg-[#fdfdf5]">
-          <label
-            htmlFor="imagen"
-            className="cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400"
-          >
-            {imagen ? (
-              <img
-                src={imagen}
-                alt="Mascota"
-                className="object-cover h-full w-full rounded-3xl"
-              />
-            ) : (
-              <>
-                <svg
-                  className="w-12 h-12 mb-2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M3 16l4-4a4 4 0 015.656 0L21 4M3 16v5h5M21 4v5h-5" />
-                </svg>
-                <p>Sube una foto de tu mascota</p>
-              </>
-            )}
-            <input
-              id="imagen"
-              type="file"
-              accept="image/*"
-              onChange={handleImagenChange}
-              className="hidden"
-            />
-          </label>
-        </div>
-
-        {/* Formulario con líneas inferiores */}
-        <div className="relative transform -skew-y-2 border border-black rounded-3xl bg-[#F5F0DC] p-6 w-full lg:w-1/2">
-          <form className="transform skew-y-2 space-y-6">
-            {["Nombre", "Edad", "Caso", "Vacunas"].map((label) => (
-              <div key={label}>
-                <label className="block text-gray-700 font-medium mb-1">
-                  {label}
-                </label>
-                <input
-                  type="text"
-                  placeholder={`Ingrese ${label.toLowerCase()}`}
-                  className="w-full bg-transparent border-b-2 border-gray-400 focus:border-orange-500 focus:outline-none py-1"
-                />
-              </div>
-            ))}
-            <div className="pt-4 flex gap-4">
-              <button
-                type="submit"
-                className="w-full bg-orange-500 text-white py-2 rounded-md font-semibold hover:bg-orange-600 transition"
-              >
-                Publicar
-              </button>
-              <button
-                type="button"
-                className="w-full bg-[#007B8A] text-white py-2 rounded-md font-semibold hover:bg-[#006b75] transition"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+const onFile = (e) => {
+const f = e.target.files?.[0];
+setFile(f || null);
+setPreview(f ? URL.createObjectURL(f) : null);
 };
 
-export default AgregarMascota;
+
+const onSubmit = async (e) => {
+e.preventDefault(); setOk(""); setError("");
+try {
+let url = "";
+if (file) {
+const up = await uploadFile(file); // { url: "http://localhost:8081/files/xxx.jpg" }
+url = up.url;
+}
+await perrosApi.create({ nombre, raza, edad: Number(edad), descr, img: url });
+setOk("Mascota guardada");
+setNombre(""); setRaza(""); setEdad(0); setDescr(""); setFile(null); setPreview(null);
+} catch (err) { setError(err.message); }
+};
+
+
+return (
+<div className="min-h-screen grid place-items-center bg-[#F3EFD2] p-6">
+<form onSubmit={onSubmit} className="w-full max-w-xl bg-white p-6 rounded-xl shadow space-y-4">
+<h1 className="text-2xl font-bold">Agregar Mascota</h1>
+{ok && <p className="text-green-700">{ok}</p>}
+{error && <p className="text-red-600">{error}</p>}
+<div>
+<label className="block mb-2">Nombre</label>
+<input className="w-full p-3 border rounded" value={nombre} onChange={(e)=>setNombre(e.target.value)} required/>
+</div>
+<div>
+<label className="block mb-2">Raza</label>
+<input className="w-full p-3 border rounded" value={raza} onChange={(e)=>setRaza(e.target.value)} required/>
+</div>
+<div>
+<label className="block mb-2">Edad</label>
+<input className="w-full p-3 border rounded" type="number" min="0" max="30" value={edad} onChange={(e)=>setEdad(e.target.value)} required/>
+</div>
+<div>
+<label className="block mb-2">Descripción</label>
+<textarea className="w-full p-3 border rounded" value={descr} onChange={(e)=>setDescr(e.target.value)} required/>
+</div>
+<div>
+<label className="block mb-2">Imagen</label>
+<input type="file" accept="image/*" onChange={onFile} />
+{preview && <img alt="preview" src={preview} className="mt-2 max-h-48 rounded" />}
+</div>
+<button className="w-full bg-black text-white p-3 rounded hover:opacity-90">Guardar</button>
+</form>
+</div>
+);
+}
