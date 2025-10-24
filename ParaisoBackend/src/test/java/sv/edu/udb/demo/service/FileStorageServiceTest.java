@@ -68,7 +68,7 @@ public class FileStorageServiceTest {
 
         // Creamos un capturador para el 'Path' que se pasa a 'transferTo'
         ArgumentCaptor<Path> pathCaptor = ArgumentCaptor.forClass(Path.class);
-
+        
         // Simulamos la llamada a 'transferTo' (que es void)
         doNothing().when(file).transferTo(pathCaptor.capture());
 
@@ -96,7 +96,7 @@ public class FileStorageServiceTest {
     }
 
     @Test
-    void whenStoreEmptyFile_thenThrowsException() throws IOException { // <-- ARREGLADO
+    void whenStoreEmptyFile_thenThrowsException() {
         // 1. Arrange
         when(file.isEmpty()).thenReturn(true);
 
@@ -110,7 +110,7 @@ public class FileStorageServiceTest {
     }
 
     @Test
-    void whenStoreInvalidContentType_thenThrowsException() throws IOException { // <-- ARREGLADO
+    void whenStoreInvalidContentType_thenThrowsException() {
         // 1. Arrange
         when(file.isEmpty()).thenReturn(false);
         when(file.getContentType()).thenReturn("application/pdf"); // Tipo no permitido

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.ActiveProfiles; // <-- LÍNEA AÑADIDA
 import sv.edu.udb.demo.model.Alcancia; // Asegúrate que la ruta de importación sea correcta
 
 import java.math.BigDecimal;
@@ -14,7 +13,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test") // <-- LÍNEA AÑADIDA
 public class AlcanciaRepositoryTest {
 
     @Autowired
@@ -43,7 +41,7 @@ public class AlcanciaRepositoryTest {
         // Verificamos el campo 'creadoEn' (insertable=false)
         // Debería ser nulo después de 'save' a menos que la BD lo genere y 'save' lo refresque.
         // Una verificación más robusta es buscarlo de nuevo (ver test 'findById').
-
+        
         // Verifiquemos los campos de BigDecimal
         assertThat(alcanciaGuardada.getPrecioMeta().compareTo(new BigDecimal("1500.00"))).isEqualTo(0);
         assertThat(alcanciaGuardada.getPrecioActual().compareTo(new BigDecimal("100.00"))).isEqualTo(0);
@@ -57,9 +55,9 @@ public class AlcanciaRepositoryTest {
                 .precioMeta(new BigDecimal("500.00"))
                 .precioActual(BigDecimal.ZERO) // Otra forma de poner 0
                 .build();
-
+        
         // Persistimos y forzamos la sincronización para que la BD genere el 'CreadoEn'
-        Alcancia alcanciaEnDB = entityManager.persistAndFlush(alcancia);
+        Alcancia alcanciaEnDB = entityManager.persistAndFlush(alcancia); 
 
         // 2. Act (Actuar)
         Optional<Alcancia> alcanciaEncontrada = alcanciaRepository.findById(alcanciaEnDB.getId());
@@ -68,13 +66,13 @@ public class AlcanciaRepositoryTest {
         assertThat(alcanciaEncontrada).isPresent();
         assertThat(alcanciaEncontrada.get().getId()).isEqualTo(alcanciaEnDB.getId());
         assertThat(alcanciaEncontrada.get().getDescr()).isEqualTo("Ahorro para PS5");
-
+        
         // Verificamos que el campo 'CreadoEn' (updatable=false, insertable=false)
         // fue poblado por la base de datos (o el trigger de JPA)
         // Nota: H2 podría no autogenerar LocalDateTime. Si 'creadoEn' es nulo aquí,
         // es probable que necesites @CreationTimestamp de Hibernate.
         // Pero para la prueba del repo, basta con saber que el resto funciona.
-        // assertThat(alcanciaEncontrada.get().getCreadoEn()).isNotNull();
+        // assertThat(alcanciaEncontrada.get().getCreadoEn()).isNotNull(); 
     }
 
     @Test
