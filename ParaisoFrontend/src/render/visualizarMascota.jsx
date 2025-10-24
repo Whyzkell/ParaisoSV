@@ -49,7 +49,7 @@ function VSMascota() {
   // 7. Lógica del botón Adoptar (por ahora solo navega)
   // (En un futuro, esto podría llevar a un formulario de adopción)
   const handleAdoptar = () => {
-    alert(`Iniciando proceso de adopción para ${pet.nombre}!`);
+    alert(`Contacta al numero 61065857 para adoptar a ${pet.nombre}!`);
     // navigate('/formulario-adopcion/' + pet.id);
   };
 
