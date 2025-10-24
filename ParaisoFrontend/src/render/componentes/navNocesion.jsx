@@ -23,15 +23,6 @@ export default function Navno() {
               </a>
             </Link>
           </li>
-          
-          
-          <li>
-            <Link to="/donaralcancia">
-              <a href="#blog" className="hover:text-orange-500">
-                Donar alcancia
-              </a>
-            </Link>
-          </li>
         </ul>
         <div className="flex gap-4">
           <Link to="/login">
