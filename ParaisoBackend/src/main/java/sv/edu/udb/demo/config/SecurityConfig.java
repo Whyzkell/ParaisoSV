@@ -37,32 +37,32 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/alcancias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/proyectos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/perros/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Registro
 
                         // Subida de archivos (solo ADMIN)
-                        .requestMatchers(HttpMethod.POST, "/api/files").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/files").hasAuthority("ADMIN") // <-- CAMBIADO
 
                         // Donaciones
-                        .requestMatchers(HttpMethod.POST, "/api/donaciones").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/donaciones/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/donaciones").hasAnyAuthority("USER", "ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.GET, "/api/donaciones/**").hasAuthority("ADMIN") // <-- CAMBIADO
 
                         // Usuarios (solo ADMIN)
-                        .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasAuthority("ADMIN") // <-- CAMBIADO
 
                         // Alcancías / Proyectos / Perros (mutaciones solo ADMIN)
-                        .requestMatchers(HttpMethod.POST, "/api/alcancias").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/alcancias/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/alcancias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/alcancias").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.PUT, "/api/alcancias/**").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.DELETE, "/api/alcancias/**").hasAuthority("ADMIN") // <-- CAMBIADO
 
-                        .requestMatchers(HttpMethod.POST, "/api/proyectos").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/proyectos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/proyectos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/proyectos").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.PUT, "/api/proyectos/**").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.DELETE, "/api/proyectos/**").hasAuthority("ADMIN") // <-- CAMBIADO
 
-                        .requestMatchers(HttpMethod.POST, "/api/perros").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/perros/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/perros/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/perros").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.PUT, "/api/perros/**").hasAuthority("ADMIN") // <-- CAMBIADO
+                        .requestMatchers(HttpMethod.DELETE, "/api/perros/**").hasAuthority("ADMIN") // <-- CAMBIADO
 
                         // Cualquier otro requiere autenticación
                         .anyRequest().authenticated()
@@ -71,6 +71,8 @@ public class SecurityConfig {
                 .httpBasic(h -> h.disable())
                 .formLogin(f -> f.disable())
                 .cors(Customizer.withDefaults())
+                // Hacemos que la sesión sea STATELESS (manejada por JWT)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
