@@ -7,6 +7,15 @@ import {AuthProvider} from "../src/context/AuthContext.jsx"
 import Login from './render/login.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Register from './render/register.jsx';
+import VisuProyecto from './render/visualizarProyecto.jsx';
+import AdoptarMascota from './render/adoptarMascota.jsx';
+import DonarAlcancia from './render/donarAlcancia.jsx';
+import EnviarDonacion from './render/enviarDonacion.jsx';
+import VSMascota from './render/visualizarMascota.jsx';
+import CrearAlcancia from './render/crearAlcancia.jsx';
+import AgregarMascota from './render/agregarMascosta.jsx';
+import ActualizarActividad from './render/actualizarActividades.jsx';
+import Donaciones from './render/verdonaciones.jsx';
 
 // 1. Define las rutas
 const router = createBrowserRouter([
@@ -20,7 +29,43 @@ const router = createBrowserRouter([
   },
   {
     path: '/register',
-    element: < Register/>, // App.jsx contendrá el layout/contenido principal
+    element: < Register/>, 
+  },
+   {
+    path: '/visualizar-proyecto',
+    element: < VisuProyecto/>,
+  },
+   {
+    path: '/adoptar-mascota',
+    element: < AdoptarMascota/>,
+  },
+   {
+    path: '/donaralcancia',
+    element: < DonarAlcancia/>,
+  },
+   {
+    path: '/enviadonacion',
+    element: < EnviarDonacion/>,
+  },
+  {
+    path: '/visualizar-mascota',
+    element: < VSMascota/>,
+  },
+  {
+    path: '/crear-alcancia',
+    element: <CrearAlcancia/>,
+  },
+  {
+    path: '/agregarmascota',
+    element: <AgregarMascota/>,
+  },
+  {
+    path: '/actualizaractividad',
+    element: <ActualizarActividad/>,
+  },
+  {
+    path: '/donaciones',
+    element: <Donaciones/>,
   },
   {
     element: <ProtectedRoute />, // Este elemento aplica la protección

@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import comida from "../assets/comida.png";
-import NavnoCCli from "./componentes/navCesionCli";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 
 export default function DetalleProducto() {
   const [cantidad, setCantidad] = useState(1);
   const stock = 45;
-
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   return (
     <div className="bg-[#f7f3e7] min-h-screen">
       {/* Encabezado */}
       <div className="bg-[#00848E]">
-        <NavnoCCli />
+        {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
       </div>
 
       {/* Barra de búsqueda */}

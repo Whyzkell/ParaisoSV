@@ -6,14 +6,19 @@ import pcancer from "../assets/perroCancer.jpg";
 import pc2 from "../assets/pCancer2.png";
 import pc3 from "../assets/pc3.png";
 import pc4 from "../assets/pc4.png";
-import Navno from "./componentes/navNocesion";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
 import Footer from "./componentes/footer";
+import useNavKind from "../hooks/useNavKind.js";
+
 
 export default function VisuProyecto() {
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   return (
     <div className="bg-gray-100 min-h-screen">
-      <Navno />
-
+      {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
       <section>
         <img src={pcancer} alt="Dog" className="w-full h96 object-cover " />
       </section>

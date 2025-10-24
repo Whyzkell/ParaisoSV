@@ -1,6 +1,9 @@
 import React from "react";
-import NavnoCAdm from "./componentes/navCesionAdm";
-import Footer from "./componentes/footer";
+import Footer from "./componentes/footer"
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 
 const Donaciones = () => {
   const donaciones = Array.from({ length: 12 }, (_, i) => ({
@@ -9,12 +12,13 @@ const Donaciones = () => {
     alcancia: 89,
     monto: 400,
   }));
-
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   return (
     <div className="min-h-screen bg-[#e7e1d2]">
       {/* Header */}
       <div className="bg-red-600">
-        <NavnoCAdm />
+        {/* NAV dinámico por rol */}
+        {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
         <header className="bg-red-600 py-6 flex flex-col items-center">
           <h1 className="text-3xl font-bold text-gray-800">Donaciones</h1>
         </header>

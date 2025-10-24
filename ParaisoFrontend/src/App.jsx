@@ -3,75 +3,67 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./index.css";
 import "./App.css";
+
 import perro from "./assets/perroSueter.png";
 import vector from "./assets/Vector.png";
 import union from "./assets/Union.png";
 
-import NavnoCAdm from "./render/componentes/navCesionAdm.jsx";
-import NavnoCesion from "./render/componentes/navNocesion.jsx";
-import NavCesionCli from "./render/componentes/navCesionCli.jsx";
+import NavnoCAdm from "./render/componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./render/componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./render/componentes/navCesionCli.jsx"; // Cliente
 import Footer from "./render/componentes/footer.jsx";
+
+import useNavKind from "./hooks/useNavKind.js";
 
 const projects = [
   {
     title: "Rutas de alimentación",
-    description:
-      "Es nuestro programa principal donde recorremos las carreteras llevando alimentos a los perritos y gatitos que encontramos por las calles...",
+    description: "Es nuestro programa principal donde recorremos las carreteras llevando alimentos a los perritos y gatitos que encontramos por las calles...",
     icon: "🍲",
     color: "bg-[#FDC400]",
   },
   {
     title: "Lucha contra el cancer",
-    description:
-      "Gracias a este programa hemos logrado rescatar y curar perritos en estado crítico...",
+    description: "Gracias a este programa hemos logrado rescatar y curar perritos en estado crítico...",
     icon: "🩺",
     color: "bg-[#F5F0E5]",
   },
   {
     title: "Adopciones responsables",
-    description:
-      "Buscamos familias amorosas que deseen adoptar con compromiso...",
+    description: "Buscamos familias amorosas que deseen adoptar con compromiso...",
     icon: "🏡",
     color: "bg-[#FDC400]",
   },
   {
     title: "Jornadas de salud",
-    description:
-      "Organizamos jornadas médicas veterinarias gratuitas para comunidades vulnerables...",
+    description: "Organizamos jornadas médicas veterinarias gratuitas para comunidades vulnerables...",
     icon: "💉",
     color: "bg-[#F5F0E5]",
   },
   {
     title: "Educación y conciencia",
-    description:
-      "Promovemos el respeto animal mediante talleres y campañas educativas...",
+    description: "Promovemos el respeto animal mediante talleres y campañas educativas...",
     icon: "📚",
     color: "bg-[#FDC400]",
   },
 ];
 
 export default function App() {
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
+
   const [current, setCurrent] = useState(0);
   const visibleCount = 3;
   const totalSlides = projects.length;
 
-  const [isLogged, setIsLogged] = useState(false);
-
-  useEffect(() => {
-    const user = localStorage.getItem("usuario");
-    setIsLogged(!!user); 
-  }, []);
-
   const nextSlide = () =>
-    setCurrent(prev => (prev + visibleCount >= totalSlides ? 0 : prev + 1));
+    setCurrent((prev) => (prev + visibleCount >= totalSlides ? 0 : prev + 1));
   const prevSlide = () =>
-    setCurrent(prev => (prev - 1 < 0 ? totalSlides - visibleCount : prev - 1));
+    setCurrent((prev) => (prev - 1 < 0 ? totalSlides - visibleCount : prev - 1));
 
   return (
     <div className="text-gray-800 font-sans bg-[#F5F0DC]">
-      {
-        isLogged ? <NavCesionCli/> : <NavnoCesion/>
-      }
+      {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
 
       {/* Hero */}
       <section className="flex flex-col md:flex-row items-center bg-[#F5F0DC] justify-between">
@@ -114,7 +106,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Proyectos (carrusel simple) */}
+      {/* Proyectos */}
       <section className="bg-[#F5F0E5]">
         <h2 className="text-4xl font-bold mb-10 mt-8 ml-8 text-[#06222E]">
           Nuestros Proyectos

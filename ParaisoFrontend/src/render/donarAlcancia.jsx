@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import alcanciaImg from "../assets/alcancia.png";
-import NavnoCCli from "./componentes/navCesionCli.jsx";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 import Footer from "./componentes/footer.jsx";
 
 const DonarAlcancia = () => {
   const [descripcion, setDescripcion] = useState("");
   const [meta, setMeta] = useState("");
-
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   return (
     <div className="min-h-screen bg-red-600 font-sans">
       {/* Encabezado dividido en dos mitades */}
       <div className="bg-[#F5F0DC]">
-        <NavnoCCli />
+        {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
       </div>
 
       {/* Contenido dividido */}

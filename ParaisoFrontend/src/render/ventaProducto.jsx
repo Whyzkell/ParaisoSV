@@ -4,6 +4,10 @@ import comidaJpeg from "../assets/comida.jpeg";
 import NavnoCCli from "./componentes/navCesionCli.jsx";
 import Footer from "./componentes/footer.jsx";
 import { useNavigate } from "react-router-dom";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 
 const productos = [
   {
@@ -47,7 +51,7 @@ const productos = [
     imagen: comida,
   },
 ];
-
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
 export default function VentaProducto() {
   const [busqueda, setBusqueda] = useState("");
 
@@ -63,7 +67,8 @@ export default function VentaProducto() {
 
   return (
     <div className="bg-[#f5f0dc] min-h-screen">
-      <NavnoCCli />
+      {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
 
       <section className="p-6">
         <h2 className="text-xl font-semibold mb-4">Productos</h2>

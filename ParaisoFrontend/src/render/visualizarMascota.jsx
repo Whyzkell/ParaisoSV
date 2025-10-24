@@ -4,12 +4,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import elnego from "../assets/elNegro.png";
 import Footer from "./componentes/footer";
-import NavnoCCli from "./componentes/navCesionCli";
+import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 
 function VSMascota() {
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   return (
     <div className="bg-[#F9EFE0] min-h-screen flex flex-col  w-full">
-      <NavnoCCli />
+      {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
 
       <main className="flex items-center justify-center  w-full px-8 py-12">
         <div className="w-1/3 flex-shrink-0 mr-16 mt-8 rounded-full overflow-hidden border-4 border-yellow-400 flex items-center justify-center bg-[#FFD700]">

@@ -56,7 +56,7 @@ export default function NavnoCAdm() {
           </li>
         </ul>
         <div className="flex gap-4">
-          <button className="text-orange-400 text-2xl">Juanito</button>
+          <button className="text-orange-400 text-2xl">Log out</button>
         </div>
       </nav>
     </header>

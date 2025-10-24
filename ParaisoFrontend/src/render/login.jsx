@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import gatico from "../assets/gatico.png";
 import { ArrowLeft, ArrowRight } from "lucide-react"; // Asegúrate de tener instalado lucide-react
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("/");
+  };
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      console.log(await login(username, password));
+      navigate('/');
+    } catch (err) {
+      setError('Credenciales inválidas. Por favor, revisa tu email y contraseña.');
+    }
   };
 
   return (
@@ -15,13 +32,15 @@ const Login = () => {
       <div className="flex w-1/2 items-center justify-center bg-[#F3EFD2]">
         <div className=" w-10/12">
           <h1 className="text-4xl font-bold mb-10 text-gray-900">Se uno más</h1>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-xl font-medium mb-1">
                 Correo electrónico
               </label>
               <input
                 type="email"
+                value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
               />
             </div>
@@ -32,6 +51,8 @@ const Login = () => {
               </label>
               <input
                 type="password"
+                value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 bg-[#E7E0C9] rounded-md outline-none"
               />
             </div>
@@ -40,7 +61,7 @@ const Login = () => {
               type="submit"
               className="w-full py-3 bg-[#189CAB] text-white font-semibold rounded-md text-xl"
             >
-              Inicar cesion
+              Iniciar sesion
             </button>
             <button
               type="submit"

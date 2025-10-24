@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useState } from "react";
 import chuchitos from "../assets/chuchitos.png";
 import hosh from "../assets/hosh.png";
-import { useNavigate } from "react-router-dom";
-import NavnoCCli from "./componentes/navCesionCli.jsx";
+import { useNavigate } from "react-router-dom";import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
+import useNavKind from "../hooks/useNavKind.js";
 import Footer from "./componentes/footer.jsx";
 
 const rifas = [
@@ -23,10 +25,11 @@ export default function TodasRifas() {
   const handleClick = () => {
     navigate("/comprarrifa");
   };
-
+  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
   return (
     <div className="bg-yellow-50 min-h-screen">
-      <NavnoCCli />
+      {/* NAV dinámico por rol */}
+      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
 
       <section className="flex text-center px-6 w-full">
         <div className="flex-row justify-items-start justify-start ml-8 w-2/5 mt-8">

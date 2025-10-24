@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext(null);
-const API_URL = "http://localhost:8081/api/auth"; // Ajusta tu URL del backend
+const API_URL = "http://localhost:8081/auth"; // Ajusta tu URL del backend
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
