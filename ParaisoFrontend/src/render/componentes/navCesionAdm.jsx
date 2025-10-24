@@ -30,11 +30,6 @@ export default function NavnoCAdm() {
               Adoptar
             </Link>
           </li>
-          <li>
-            <Link to="/donaralcancia" className="hover:text-orange-500">
-              Donar alcancia
-            </Link>
-          </li>
 
           <li className="relative">
             <button
