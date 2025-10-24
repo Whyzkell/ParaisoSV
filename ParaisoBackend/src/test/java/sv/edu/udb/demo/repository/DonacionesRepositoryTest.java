@@ -27,11 +27,11 @@ public class DonacionesRepositoryTest {
     // Este metodo crea y persiste las dependencias necesarias.
     // Devuelve un array con el Usuario y la Alcancia ya guardados.
     private Object[] crearDependencias() {
-        // 1. Crear Usuario (Ajusta esto según tu entidad Usuario)
+        // 1. Crear Usuario (Ajustado a tu modelo Usuario.java)
         Usuario usuario = Usuario.builder()
-                .nombre("Usuario de Prueba") // Asumiendo que tiene un campo 'nombre'
-                .email("test@test.com") // Asumiendo que tiene un campo 'email'
-                .contrasena("password") // Asumiendo que tiene un campo 'contrasena'
+                .nombre("Usuario de Prueba")
+                .correo("test@test.com")     // <-- CORREGIDO
+                .password("password")       // <-- CORREGIDO
                 .build();
         Usuario usuarioGuardado = entityManager.persistAndFlush(usuario);
 

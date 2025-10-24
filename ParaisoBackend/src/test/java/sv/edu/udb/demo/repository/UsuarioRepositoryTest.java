@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 // Importante para probar la restricción 'unique'
-import org.springframework.dao.DataIntegrityViolationException; 
+import org.springframework.dao.DataIntegrityViolationException;
 import sv.edu.udb.demo.model.Usuario;
 
 import java.time.LocalDateTime;
@@ -72,12 +72,19 @@ public class UsuarioRepositoryTest {
                 .password("pass-789")
                 .rol("USER")
                 .build());
-        
+
         LocalDateTime fechaCreacionOriginal = usuarioEnDB.getCreadoEn();
         assertThat(fechaCreacionOriginal).isNotNull(); // Pre-verificación
 
         // 2. Act
-        Usuario usuarioParaActualizar = usuarioEncontrado.get();
+
+        // --- INICIO DE LA CORRECCIÓN ---
+        // Primero, busca el usuario que acabas de guardar
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioEnDB.getId());
+        assertThat(usuarioOptional).isPresent(); // Buena práctica: asegurar que existe
+        Usuario usuarioParaActualizar = usuarioOptional.get();
+        // --- FIN DE LA CORRECCIÓN ---
+
         usuarioParaActualizar.setNombre("Carlos Actualizado");
         usuarioParaActualizar.setRol("MODERATOR");
         usuarioRepository.saveAndFlush(usuarioParaActualizar); // Usamos saveAndFlush para forzar
@@ -86,11 +93,11 @@ public class UsuarioRepositoryTest {
         Usuario usuarioActualizado = usuarioRepository.findById(usuarioEnDB.getId()).get();
         assertThat(usuarioActualizado.getNombre()).isEqualTo("Carlos Actualizado");
         assertThat(usuarioActualizado.getRol()).isEqualTo("MODERATOR");
-        
+
         // Verificamos que 'creadoEn' NO cambió (updatable = false)
         assertThat(usuarioActualizado.getCreadoEn()).isEqualTo(fechaCreacionOriginal);
     }
-    
+
     // --- Pruebas del Método Personalizado ---
 
     @Test
@@ -153,6 +160,6 @@ public class UsuarioRepositoryTest {
             usuarioRepository.save(usuario2);
             entityManager.flush(); // La excepción se lanza al hacer flush (commit a la BD)
         })
-        .isInstanceOf(DataIntegrityViolationException.class); // Verificamos que es la excepción correcta
+                .isInstanceOf(DataIntegrityViolationException.class); // Verificamos que es la excepción correcta
     }
 }
