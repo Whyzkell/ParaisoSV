@@ -11,6 +11,7 @@ import sv.edu.udb.demo.model.PerroEnAdopcion;
 import sv.edu.udb.demo.service.PerroEnAdopcionService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/perros")
@@ -19,19 +20,13 @@ public class PerrosController {
 
     private final PerroEnAdopcionService service;
 
-    // GET (con filtros: nombre, raza, edadMin, edadMax)
+    // públicos
     @GetMapping
-    public List<PerroEnAdopcion> listar(
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String raza,
-            @RequestParam(required = false) Integer edadMin,
-            @RequestParam(required = false) Integer edadMax
-    ) {
+    public List<PerroEnAdopcion> listar(@RequestParam(required = false) String nombre,
+                                        @RequestParam(required = false) String raza) {
         return service.findAll().stream()
-                .filter(p -> nombre == null || (p.getNombre() != null && p.getNombre().toLowerCase().contains(nombre.toLowerCase())))
-                .filter(p -> raza == null || (p.getRaza() != null && p.getRaza().toLowerCase().contains(raza.toLowerCase())))
-                .filter(p -> edadMin == null || (p.getEdad() != null && p.getEdad() >= edadMin))
-                .filter(p -> edadMax == null || (p.getEdad() != null && p.getEdad() <= edadMax))
+                .filter(p -> nombre == null || (p.getNombre()!=null && p.getNombre().toLowerCase().contains(nombre.toLowerCase())))
+                .filter(p -> raza   == null || (p.getRaza()!=null && p.getRaza().toLowerCase().contains(raza.toLowerCase())))
                 .toList();
     }
 
@@ -41,14 +36,18 @@ public class PerrosController {
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
+    // admin: img obligatoria
     @PostMapping
-    public ResponseEntity<PerroEnAdopcion> crear(@Valid @RequestBody PerroCreateDTO dto) {
+    public ResponseEntity<?> crear(@Valid @RequestBody PerroCreateDTO dto) {
+        if (dto.img()==null || dto.img().isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "La imagen (img) es obligatoria"));
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PerroEnAdopcion> actualizar(@PathVariable Integer id,
-                                                      @Valid @RequestBody PerroUpdateDTO dto) {
+    public ResponseEntity<?> actualizar(@PathVariable Integer id, @Valid @RequestBody PerroUpdateDTO dto) {
+        if (dto.img()!=null && dto.img().isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "La imagen (img) no puede ser vacía"));
         try { return ResponseEntity.ok(service.update(id, dto)); }
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }

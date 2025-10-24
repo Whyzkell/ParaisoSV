@@ -11,6 +11,7 @@ import sv.edu.udb.demo.model.Proyectos;
 import sv.edu.udb.demo.service.ProyectosService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/proyectos")
@@ -19,20 +20,13 @@ public class ProyectosController {
 
     private final ProyectosService service;
 
-    // GET (con filtros: q, tit, descr)
+    // públicos
     @GetMapping
-    public List<Proyectos> listar(
-            @RequestParam(required = false) String q,
-            @RequestParam(required = false) String tit,
-            @RequestParam(required = false) String descr
-    ) {
+    public List<Proyectos> listar(@RequestParam(required = false) String q) {
         return service.findAll().stream()
-                .filter(p -> q == null || (
-                        (p.getTit() != null && p.getTit().toLowerCase().contains(q.toLowerCase())) ||
-                                (p.getDescr() != null && p.getDescr().toLowerCase().contains(q.toLowerCase()))
-                ))
-                .filter(p -> tit == null || (p.getTit() != null && p.getTit().toLowerCase().contains(tit.toLowerCase())))
-                .filter(p -> descr == null || (p.getDescr() != null && p.getDescr().toLowerCase().contains(descr.toLowerCase())))
+                .filter(p -> q == null ||
+                        (p.getTit()!=null && p.getTit().toLowerCase().contains(q.toLowerCase())) ||
+                        (p.getDescr()!=null && p.getDescr().toLowerCase().contains(q.toLowerCase())))
                 .toList();
     }
 
@@ -42,14 +36,18 @@ public class ProyectosController {
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }
 
+    // admin: img obligatoria
     @PostMapping
-    public ResponseEntity<Proyectos> crear(@Valid @RequestBody ProyectosCreateDTO dto) {
+    public ResponseEntity<?> crear(@Valid @RequestBody ProyectosCreateDTO dto) {
+        if (dto.img()==null || dto.img().isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "La imagen (img) es obligatoria"));
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proyectos> actualizar(@PathVariable Integer id,
-                                                @Valid @RequestBody ProyectosUpdateDTO dto) {
+    public ResponseEntity<?> actualizar(@PathVariable Integer id, @Valid @RequestBody ProyectosUpdateDTO dto) {
+        if (dto.img()!=null && dto.img().isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "La imagen (img) no puede ser vacía"));
         try { return ResponseEntity.ok(service.update(id, dto)); }
         catch (IllegalArgumentException ex) { return ResponseEntity.notFound().build(); }
     }

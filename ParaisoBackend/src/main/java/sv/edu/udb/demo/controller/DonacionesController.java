@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import sv.edu.udb.demo.dto.DonacionesCreateDTO;
 import sv.edu.udb.demo.model.Donaciones;
@@ -27,16 +26,16 @@ public class DonacionesController {
     private final UsuarioRepository usuarioRepo;
     private final DonacionesRepository donacionesRepo;
 
-    // POST (crear donación + suma a PrecioActual)
+    // Con JWT: el principal trae el username (correo)
     @PostMapping
-    public Donaciones crear(@AuthenticationPrincipal UserDetails auth,
+    public Donaciones crear(@AuthenticationPrincipal(expression = "username") String username,
                             @Valid @RequestBody DonacionesCreateDTO dto) {
-        Usuario u = usuarioRepo.findByCorreo(auth.getUsername())
+        Usuario u = usuarioRepo.findByCorreo(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario app no encontrado"));
         return service.crearDonacion(u.getId(), dto);
     }
 
-    // GET con filtros: usuarioId, alcanciaId, montoMin/Max, rango de fechas [desde, hasta]
+    // Reporte con filtros (ADMIN)
     @GetMapping
     public List<Donaciones> listar(
             @RequestParam(required = false) Integer usuarioId,
@@ -47,9 +46,8 @@ public class DonacionesController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta
     ) {
         var all = donacionesRepo.findAll();
-
         LocalDateTime from = (desde == null) ? null : desde.atStartOfDay();
-        LocalDateTime to   = (hasta == null) ? null : hasta.plusDays(1).atStartOfDay(); // inclusivo
+        LocalDateTime to   = (hasta == null) ? null : hasta.plusDays(1).atStartOfDay();
 
         return all.stream()
                 .filter(d -> usuarioId == null || (d.getUsuario()!=null && usuarioId.equals(d.getUsuario().getId())))
