@@ -1,81 +1,168 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // 1. Importar axios
 import { useNavigate } from "react-router-dom";
-import pcancer from "../assets/perroCancer.jpg";
-import pc2 from "../assets/pCancer2.png";
-import pc3 from "../assets/pc3.png";
-import pc4 from "../assets/pc4.png";
-import NavnoCAdm from "./componentes/navCesionAdm.jsx";   // Admin
-import NavnoCesion from "./componentes/navNocesion.jsx";  // Invitado
+import NavnoCAdm from "./componentes/navCesionAdm.jsx"; // Admin
+import NavnoCesion from "./componentes/navNocesion.jsx"; // Invitado
 import NavCesionCli from "./componentes/navCesionCli.jsx"; // Cliente
 import Footer from "./componentes/footer";
 import useNavKind from "../hooks/useNavKind.js";
+import { X } from "lucide-react"; // Icono para cerrar el modal
 
+const API_URL = "http://localhost:8081"; // URL de tu backend
 
+// --- Componente Modal (puedes moverlo a un archivo separado si prefieres) ---
+const ProyectoModal = ({ proyecto, onClose }) => {
+  if (!proyecto) return null; // No renderizar si no hay proyecto seleccionado
+
+  return (
+    // Overlay oscuro semi-transparente
+    <div
+      className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
+      onClick={onClose} // Cerrar al hacer clic fuera del contenido
+    >
+      {/* Contenedor del contenido del modal */}
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
+        onClick={(e) => e.stopPropagation()} // Evitar que el clic dentro cierre el modal
+      >
+        {/* Botón de cerrar */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 p-1 bg-white rounded-full z-10"
+          aria-label="Cerrar modal"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Imagen del proyecto */}
+        <img
+          src={proyecto.img}
+          alt={proyecto.tit}
+          className="w-full h-64 object-cover rounded-t-lg" // Altura fija para la imagen
+        />
+
+        {/* Contenido de texto */}
+        <div className="p-6">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            {proyecto.tit}
+          </h2>
+          {/* Formatear descripción para mostrar saltos de línea si los hubiera */}
+          <p className="text-gray-700 whitespace-pre-wrap">{proyecto.descr}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Componente Principal de la Página ---
 export default function VisuProyecto() {
-  const navKind = useNavKind(); // 'admin' | 'client' | 'guest'
+  const navKind = useNavKind();
+  const navigate = useNavigate();
+
+  // 2. Estados para proyectos, carga, error y modal
+  const [proyectos, setProyectos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedProyecto, setSelectedProyecto] = useState(null); // Proyecto para el modal
+
+  // 3. Cargar proyectos al montar el componente
+  useEffect(() => {
+    const fetchProyectos = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API_URL}/api/proyectos`);
+        setProyectos(response.data);
+        setError(null);
+      } catch (err) {
+        console.error("Error cargando proyectos:", err);
+        setError("No se pudieron cargar los proyectos.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProyectos();
+  }, []); // [] = ejecutar solo una vez
+
+  // 4. Funciones para abrir y cerrar el modal
+  const openModal = (proyecto) => {
+    setSelectedProyecto(proyecto);
+  };
+
+  const closeModal = () => {
+    setSelectedProyecto(null);
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* NAV dinámico por rol */}
-      {navKind === "admin" ? <NavnoCAdm /> : navKind === "client" ? <NavCesionCli /> : <NavnoCesion />}
-      <section>
-        <img src={pcancer} alt="Dog" className="w-full h96 object-cover " />
-      </section>
+      {navKind === "admin" ? (
+        <NavnoCAdm />
+      ) : navKind === "client" ? (
+        <NavCesionCli />
+      ) : (
+        <NavnoCesion />
+      )}
 
-      <section className="text-center py-10 px-4">
-        <h2 className="text-3xl font-bold mb-8">Lucha Contra El Cáncer</h2>
-        <p className="text-gray-500 text-xl mt-2 mb-8">22 May, 2024</p>
-        <p className="text-gray-600 text-xl mt-4 max-w-2xl mx-auto">
-          Los perritos de las calles también suelen y es común enfermarse de
-          cáncer, como los tumores de stickers el cual es un tumor cancerígeno,
-          su único tratamiento es con quimioterapias y se contrae mediante las
-          relaciones sexuales entre perros contagiados. Al no tratarse a tiempo
-          termina regándose por todo el cuerpo y se convierte en cáncer de piel.
+      {/* Encabezado Opcional (puedes adaptar esto o quitarlo) */}
+      <header className="bg-teal-600 text-white text-center py-12 px-4">
+        <h1 className="text-4xl font-bold mb-2">Nuestros Proyectos</h1>
+        <p className="text-lg opacity-90 max-w-2xl mx-auto">
+          Conoce las iniciativas que impulsamos para hacer una diferencia. Tu
+          apoyo es fundamental.
         </p>
+      </header>
+
+      {/* 5. Galería de Proyectos */}
+      <section className="max-w-7xl mx-auto py-10 px-6">
+        {/* Renderizado Condicional */}
+        {loading && (
+          <p className="text-center text-xl text-gray-600">
+            Cargando proyectos...
+          </p>
+        )}
+        {error && (
+          <p className="text-center text-xl text-red-600 bg-red-100 p-4 rounded-md">
+            {error}
+          </p>
+        )}
+
+        {!loading && !error && proyectos.length === 0 && (
+          <p className="text-center text-xl text-gray-600">
+            No hay proyectos para mostrar en este momento.
+          </p>
+        )}
+
+        {!loading && !error && proyectos.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Mapear proyectos a tarjetas */}
+            {proyectos.map((proyecto) => (
+              <div
+                key={proyecto.id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-300"
+                onClick={() => openModal(proyecto)} // Abrir modal al hacer clic
+              >
+                <img
+                  src={proyecto.img}
+                  alt={proyecto.tit}
+                  className="w-full h-48 object-cover" // Imagen de la tarjeta
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800 truncate">
+                    {proyecto.tit}
+                  </h3>
+                  {/* Opcional: mostrar un extracto de la descripción */}
+                  {/* <p className="text-sm text-gray-600 mt-1 line-clamp-2">{proyecto.descr}</p> */}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
-      <section className="bg-[#EBE3CC] p-10">
-        <div className="max-w-6xl mx-auto space-y-10">
-          <div>
-            <img src={pc2} alt="Dog" className="w-full rounded-lg mb-6" />
-            <h3 className="font-bold text-lg mb-2">Orígenes</h3>
-            <p className="text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-bold text-lg mb-2">Progreso</h3>
-            <p className="text-gray-600 mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <img src={pc3} alt="Dog" className="w-full rounded-lg" />
-              <img src={pc4} alt="Dog" className="w-full rounded-lg" />
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-bold text-lg mb-2">
-              Lugares Donde Se Ha Ayudado
-            </h3>
-            <p className="text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </div>
-        </div>
-      </section>
       <Footer />
+
+      {/* 6. Renderizar el Modal (solo si hay un proyecto seleccionado) */}
+      <ProyectoModal proyecto={selectedProyecto} onClose={closeModal} />
     </div>
   );
 }
