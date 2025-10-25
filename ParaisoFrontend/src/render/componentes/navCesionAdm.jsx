@@ -8,7 +8,7 @@ export default function NavnoCAdm() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();                     // borra localStorage y setea user=null
+    logout(); // borra localStorage y setea user=null
     navigate("/login", { replace: true }); // o navigate("/", { replace: true })
   };
 
@@ -51,6 +51,9 @@ export default function NavnoCAdm() {
                 </li>
                 <li className="px-4 py-2 hover:bg-orange-100">
                   <Link to="/donaciones">Ver Donaciones</Link>
+                </li>
+                <li className="px-4 py-2 hover:bg-orange-100">
+                  <Link to="/crear-actividad">Crear Actividad</Link>
                 </li>
               </ul>
             )}

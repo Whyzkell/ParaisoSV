@@ -16,6 +16,7 @@ import CrearAlcancia from "./render/crearAlcancia.jsx";
 import AgregarMascota from "./render/agregarMascosta.jsx";
 import ActualizarActividad from "./render/actualizarActividades.jsx";
 import Donaciones from "./render/verdonaciones.jsx";
+import CrearActividad from "./render/CrearActividad.jsx";
 
 // 1. Define las rutas
 const router = createBrowserRouter([
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <h1>404 - Página no encontrada</h1>,
+  },
+  {
+    path: "/crear-actividad",
+    element: <CrearActividad />,
   },
 ]);
 
