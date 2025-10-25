@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import NavnoCAdm from "./componentes/navCesionAdm.jsx";
 import Footer from "./componentes/footer.jsx";
 import { useAuth } from "../context/AuthContext.jsx"; // Para autenticación
+import { Trash2 } from "lucide-react"; // Icono opcional para el botón de eliminar
 
 const API_URL = "http://localhost:8081"; // URL del backend
 
@@ -12,17 +13,18 @@ const ActualizarActividad = () => {
   const { user } = useAuth(); // Obtener usuario y token
 
   // Estados
-  const [proyectos, setProyectos] = useState([]); // Lista de todas las actividades
-  const [selectedProyecto, setSelectedProyecto] = useState(null); // Actividad seleccionada para editar
-  const [formData, setFormData] = useState({ tit: "", descr: "" }); // Datos del formulario
-  const [imagenFile, setImagenFile] = useState(null); // Nuevo archivo de imagen
-  const [imagenPreview, setImagenPreview] = useState(null); // Vista previa (URL)
-  const [loadingList, setLoadingList] = useState(true); // Carga de la lista
-  const [listError, setListError] = useState(null); // Error al cargar lista
-  const [submitting, setSubmitting] = useState(false); // Enviando formulario
+  const [proyectos, setProyectos] = useState([]);
+  const [selectedProyecto, setSelectedProyecto] = useState(null);
+  const [formData, setFormData] = useState({ tit: "", descr: "" });
+  const [imagenFile, setImagenFile] = useState(null);
+  const [imagenPreview, setImagenPreview] = useState(null);
+  const [loadingList, setLoadingList] = useState(true);
+  const [listError, setListError] = useState(null);
+  const [submitting, setSubmitting] = useState(false); // Para deshabilitar botones durante acción
 
   // Cargar todos los proyectos al inicio
   const fetchProyectos = async () => {
+    // ... (igual que antes) ...
     try {
       setLoadingList(true);
       const response = await axios.get(`${API_URL}/api/proyectos`);
@@ -37,43 +39,44 @@ const ActualizarActividad = () => {
   };
 
   useEffect(() => {
-    // Verificar si es Admin antes de cargar
-    // IMPORTANTE: Asegúrate que tu `AuthContext` guarde el rol del usuario en `user.role`
-    // Si no, esta verificación fallará. Comenta o ajusta si es necesario.
+    // ... (igual que antes, con la verificación de Admin) ...
     if (!user || !user.token /* || user.role !== 'ADMIN' */) {
       setListError("Acceso denegado. Solo Administradores pueden editar.");
       setLoadingList(false);
-      // Podrías redirigir: navigate('/login');
       return;
     }
     fetchProyectos();
-  }, [user]); // Depende de 'user' para tener el token y rol
+  }, [user]);
 
   // Seleccionar un proyecto para editar
   const handleSelectProyecto = (proyecto) => {
+    // ... (igual que antes) ...
     setSelectedProyecto(proyecto);
     setFormData({ tit: proyecto.tit, descr: proyecto.descr });
-    setImagenPreview(proyecto.img); // Mostrar imagen actual
-    setImagenFile(null); // Limpiar selección de archivo nuevo
+    setImagenPreview(proyecto.img);
+    setImagenFile(null);
   };
 
   // Manejar cambios en el formulario de texto
   const handleChange = (e) => {
+    // ... (igual que antes) ...
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Manejar cambio de imagen
   const handleImagenChange = (e) => {
+    // ... (igual que antes) ...
     const file = e.target.files[0];
     if (file) {
       setImagenFile(file);
-      setImagenPreview(URL.createObjectURL(file)); // Vista previa de la nueva imagen
+      setImagenPreview(URL.createObjectURL(file));
     }
   };
 
-  // Enviar la actualización
+  // Enviar la actualización (handleSubmit)
   const handleSubmit = async (e) => {
+    // ... (igual que antes) ...
     e.preventDefault();
     if (!selectedProyecto || !user || !user.token) {
       alert(
@@ -81,17 +84,15 @@ const ActualizarActividad = () => {
       );
       return;
     }
-    // Simple validación para no enviar campos vacíos si antes no lo estaban
     if (!formData.tit || !formData.descr) {
       alert("El título y la descripción no pueden estar vacíos.");
       return;
     }
 
     setSubmitting(true);
-    let finalImageUrl = selectedProyecto.img; // Usar imagen actual por defecto
+    let finalImageUrl = selectedProyecto.img;
 
     try {
-      // PASO 1 (Opcional): Subir nueva imagen si existe
       if (imagenFile) {
         const fileData = new FormData();
         fileData.append("file", imagenFile);
@@ -106,22 +107,16 @@ const ActualizarActividad = () => {
           fileData,
           configImg
         );
-        finalImageUrl = resImg.data.url; // Usar la nueva URL
+        finalImageUrl = resImg.data.url;
       }
 
-      // PASO 2: Construir payload SOLO con los campos que cambiaron
       const updateData = {};
-      if (formData.tit !== selectedProyecto.tit) {
-        updateData.tit = formData.tit;
-      }
-      if (formData.descr !== selectedProyecto.descr) {
+      if (formData.tit !== selectedProyecto.tit) updateData.tit = formData.tit;
+      if (formData.descr !== selectedProyecto.descr)
         updateData.descr = formData.descr;
-      }
-      if (finalImageUrl !== selectedProyecto.img) {
+      if (finalImageUrl !== selectedProyecto.img)
         updateData.img = finalImageUrl;
-      }
 
-      // Solo hacer PUT si hay algo que cambiar
       if (Object.keys(updateData).length > 0) {
         const configProject = {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -133,14 +128,13 @@ const ActualizarActividad = () => {
         );
       } else {
         alert("No se detectaron cambios para guardar.");
-        setSubmitting(false); // Reactivar botón si no hubo cambios
-        return; // Salir si no hay nada que enviar
+        setSubmitting(false);
+        return;
       }
 
       alert("¡Actividad actualizada exitosamente!");
-      // Limpiar y refrescar
-      handleCancelar(); // Limpia el formulario y la selección
-      fetchProyectos(); // Vuelve a cargar la lista actualizada
+      handleCancelar();
+      fetchProyectos();
     } catch (error) {
       console.error("Error al actualizar la actividad:", error);
       if (error.response?.status === 403) {
@@ -149,21 +143,71 @@ const ActualizarActividad = () => {
         alert("Error: Tu sesión ha expirado. Vuelve a iniciar sesión.");
       } else if (error.response?.status === 404) {
         alert("Error: La actividad que intentas editar ya no existe.");
-        fetchProyectos(); // Refrescar lista por si acaso
+        fetchProyectos();
         handleCancelar();
       } else {
         alert("Ocurrió un error inesperado al actualizar la actividad.");
       }
     } finally {
-      // Asegurarse de reactivar el botón incluso si no hubo cambios detectados antes
+      // Solo desactivar si hubo cambios, para que el alert de "No cambios" funcione bien
       if (Object.keys(updateData).length > 0) {
         setSubmitting(false);
       }
     }
   };
 
+  // --- NUEVA FUNCIÓN: Eliminar Actividad ---
+  const handleDelete = async () => {
+    if (!selectedProyecto || !user || !user.token) {
+      alert("Selecciona una actividad para eliminar y asegúrate de ser Admin.");
+      return;
+    }
+
+    // Confirmación
+    if (
+      !window.confirm(
+        `¿Estás seguro de que quieres eliminar la actividad "${selectedProyecto.tit}"? Esta acción no se puede deshacer.`
+      )
+    ) {
+      return;
+    }
+
+    setSubmitting(true); // Deshabilitar botones
+
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+      };
+      // Petición DELETE al backend
+      await axios.delete(
+        `${API_URL}/api/proyectos/${selectedProyecto.id}`,
+        config
+      );
+
+      alert("¡Actividad eliminada exitosamente!");
+      handleCancelar(); // Limpiar formulario
+      fetchProyectos(); // Refrescar lista
+    } catch (error) {
+      console.error("Error al eliminar la actividad:", error);
+      if (error.response?.status === 403) {
+        alert("Error: No tienes permisos de Administrador para eliminar.");
+      } else if (error.response?.status === 401) {
+        alert("Error: Tu sesión ha expirado.");
+      } else if (error.response?.status === 404) {
+        alert("Error: La actividad ya no existe.");
+        fetchProyectos(); // Refrescar lista por si acaso
+        handleCancelar();
+      } else {
+        alert("Ocurrió un error inesperado al eliminar.");
+      }
+    } finally {
+      setSubmitting(false); // Reactivar botones
+    }
+  };
+
   // Cancelar edición (limpia el formulario y deselecciona)
   const handleCancelar = () => {
+    // ... (igual que antes) ...
     setSelectedProyecto(null);
     setFormData({ tit: "", descr: "" });
     setImagenFile(null);
@@ -173,13 +217,10 @@ const ActualizarActividad = () => {
   return (
     <div className="min-h-screen bg-[#f5f5dc] font-sans">
       <NavnoCAdm />
-
-      {/* Dividir la pantalla: Lista a la izquierda, Formulario a la derecha */}
       <main className="flex flex-col md:flex-row max-w-7xl mx-auto py-10 px-6 gap-8 min-h-[calc(100vh-160px)]">
-        {" "}
-        {/* Ajuste de altura */}
         {/* Sección Lista de Actividades */}
         <div className="w-full md:w-1/3 lg:w-2/5 flex flex-col">
+          {/* ... (igual que antes) ... */}
           <h2 className="text-2xl font-bold text-gray-800 mb-4 flex-shrink-0">
             Selecciona Actividad a Editar
           </h2>
@@ -187,8 +228,6 @@ const ActualizarActividad = () => {
           {listError && <p className="text-red-600">{listError}</p>}
           {!loadingList && !listError && (
             <div className="space-y-3 overflow-y-auto pr-2 flex-grow">
-              {" "}
-              {/* Scrollable list */}
               {proyectos.length > 0 ? (
                 proyectos.map((proj) => (
                   <div
@@ -216,11 +255,12 @@ const ActualizarActividad = () => {
                     aquí
                   </a>
                   .
-                </p> // Enlace opcional
+                </p>
               )}
             </div>
           )}
         </div>
+
         {/* Sección Formulario de Edición */}
         <div className="w-full md:w-2/3 lg:w-3/5">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
@@ -228,10 +268,10 @@ const ActualizarActividad = () => {
               ? `Editando: ${selectedProyecto.tit}`
               : "Selecciona una actividad de la lista"}
           </h2>
-          {/* Mostramos el formulario solo si hay una actividad seleccionada */}
           {selectedProyecto && (
             <div className="bg-[#F5F0DC] p-6 rounded-3xl shadow-md border border-black">
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* ... (Área de imagen, Título, Descripción igual que antes) ... */}
                 {/* Área de imagen */}
                 <div className="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl h-40 bg-[#fdfdf5]">
                   <label
@@ -269,7 +309,6 @@ const ActualizarActividad = () => {
                     />
                   </label>
                 </div>
-
                 {/* Campo Título */}
                 <div>
                   <label
@@ -285,10 +324,9 @@ const ActualizarActividad = () => {
                     value={formData.tit}
                     onChange={handleChange}
                     className="w-full bg-transparent border-b-2 border-gray-400 focus:border-orange-500 focus:outline-none py-1 text-sm"
-                    required // Título sigue siendo requerido
+                    required
                   />
                 </div>
-
                 {/* Campo Descripción */}
                 <div>
                   <label
@@ -304,32 +342,46 @@ const ActualizarActividad = () => {
                     onChange={handleChange}
                     rows="3"
                     className="w-full bg-transparent border-b-2 border-gray-400 focus:border-orange-500 focus:outline-none py-1 resize-none text-sm"
-                    required // Descripción sigue siendo requerida
+                    required
                   />
                 </div>
 
-                {/* Botones */}
+                {/* --- BOTONES ACTUALIZADOS --- */}
                 <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                  {/* Botón Eliminar (NUEVO) */}
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={submitting}
+                    className="w-full bg-red-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-red-700 transition text-sm disabled:opacity-50 flex items-center justify-center gap-1"
+                  >
+                    <Trash2 size={16} /> {/* Icono Opcional */}
+                    Eliminar
+                  </button>
+
+                  {/* Botón Cancelar */}
                   <button
                     type="button"
                     onClick={handleCancelar}
                     disabled={submitting}
                     className="w-full bg-[#007B8A] text-white py-2 rounded-md font-semibold hover:bg-[#006b75] transition text-sm disabled:opacity-50"
                   >
-                    Cancelar / Deseleccionar
+                    Cancelar
                   </button>
+
+                  {/* Botón Actualizar */}
                   <button
                     type="submit"
                     disabled={submitting}
                     className="w-full bg-orange-500 text-white py-2 rounded-md font-semibold hover:bg-orange-600 transition text-sm disabled:opacity-50"
                   >
-                    {submitting ? "Actualizando..." : "Actualizar Actividad"}
+                    {submitting ? "Guardando..." : "Actualizar"}
                   </button>
                 </div>
               </form>
             </div>
           )}
-          {/* Mensaje si no hay nada seleccionado */}
+          {/* ... (Mensaje si no hay nada seleccionado igual que antes) ... */}
           {!selectedProyecto && !loadingList && !listError && (
             <p className="text-center text-gray-600 mt-10">
               Haz clic en una actividad de la lista para empezar a editarla.
@@ -337,7 +389,6 @@ const ActualizarActividad = () => {
           )}
         </div>
       </main>
-
       <Footer />
     </div>
   );
